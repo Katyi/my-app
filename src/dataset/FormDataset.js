@@ -131,26 +131,26 @@ vetDiseaseAsInSource:{
   rus:"Болезнь животного (как в источнике)",
   formikName:"vetDiseaseAsInSource",
   type:4,
-  path: "vetDiseaseAsInSource",
+  path: "allVetDiseaseAsInSource",
 },
 medicinalForm:{
   rus:"Лекарственная форма",
   formikName:"medicinalForm",
   type:4,
-  path: "medicinalForm",
+  path: "allMedicinalForms",
 
 },
 plantPartUsed:{
   rus:"Используемая часть растения",
   formikName:"plantPartUsed",
   type:4,
-  path: "plantPartUsed",
+  path: "allPlantPartUsed",
 },
 plantPartUsedInSource:{
   rus:"Используемая часть растения (как в источнике)",
   formikName:"plantPartUsedInSource",
   type:4,
-  path: "plantPartUsedInSource",
+  path: "allPlantPartUsedInSource",
 },
 plantPart:{
   rus:"Лексема обозначает часть растения",
@@ -168,19 +168,19 @@ storageType:{
   rus:"Способ обработки и запасания",
   formikName:"storageType",
   type:13,
-  path: "storageType",
+  path: "allStorageTypes",
 },
 ethnoList:{
   rus:"Этноним",
   formikName:"ethnoList",
   type:4,
-  path: "ethnoList",
+  path: "allEthnoLists",
 },
 socialClassRel :{
   rus:"Сословие",
   formikName:"socialClassRel",
-  type:1,
-  path: "socialClassRel",
+  type:4,
+  path: "allSocialClassRels",
 },
 placeDistribution:{
   rus:"Место произрастания",
@@ -198,7 +198,7 @@ place:{
   rus:"Место использования",
   formikName:"place",
   type:9,
-  path: "place",
+  path: "allPlaces",
 },
 originalWord:{
   rus:"Слово в оригинале (если перевод)",
@@ -296,7 +296,7 @@ yearPeriod:{
 //   graphqlName:"",
 // },
 // social_class:{4
-//   rus:"Сословие",
+// rus:"Сословие",
 //   graphqlName:"socialClass",
 // },
 // temporary_name_OriginalOrTranslated:"Оригинал / перевод", boolean

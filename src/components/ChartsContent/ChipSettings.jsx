@@ -19,15 +19,15 @@ function ChipSettings({
 const [openSetting, setOpenSetting] = useState(false)
 const allChips = getAllChartsChip( data,variants)
 const length = getArraysTotalLengthFromObject(exceptions)
+
   return (
     <Container maxWidth="lg" sx={{}}>
       {/* кнопка открыть/свернуть */}
       <Box
-          display={'flex'}
-          width={"100%"}
-          alignItems={"center"}
-          justifyContent={"flex-end"}
-      
+        display={'flex'}
+        width={"100%"}
+        alignItems={"center"}
+        justifyContent={"flex-end"}
       >
         <Stack
           as={IconButton}
@@ -70,7 +70,7 @@ const length = getArraysTotalLengthFromObject(exceptions)
         </Stack>
 
       </Box>
-      {/* блок настроек */}
+      {/* блок настройки графика - тэги */}
       <Collapse in={openSetting} timeout="auto" unmountOnExit orientation="vertical">
         <Box borderLeft={'2px solid #D0C7B6'} pl={2} gap={2} display={'flex'} flexDirection={'column'} alignItems={'flex-start'} >
         {
@@ -96,9 +96,8 @@ const length = getArraysTotalLengthFromObject(exceptions)
         }
         </Box>
       </Collapse>
-      {/* блок активных чипов */}
+      {/* блок активных чипов - зачем пока не понятно */}
       <Collapse in={!openSetting} unmountOnExit orientation="vertical" timeout={{ enter: 1000, exit: -200 }}>
-        
         <Box borderLeft={'2px solid #D0C7B6'} pl={2} gap={1} display={'flex'} flexDirection={'column'} alignItems={'flex-start'} >
           {
           Object.keys(exceptions).map((option,index)=>{
@@ -122,7 +121,7 @@ const length = getArraysTotalLengthFromObject(exceptions)
             </Box>)
           })
         }</Box>
-        </Collapse>
+      </Collapse>
     </Container>
   );
 }

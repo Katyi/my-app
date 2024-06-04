@@ -1,22 +1,46 @@
 import { Box, Chip, Container } from '@mui/material'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { AOS_INTRO_BLOCK } from '../../dataset/Animations';
 import { groupBy, hexToRgb, sortByTagType } from '../../utils/FloraUtils';
 
 
-function BlogTagContainer({data, active_list, setActive, filtered}) {
-    const someNonExcludableTags = ["XII", "XIII", "XIV", "XV", "XVI век", "XVII век", "XVIII век", "XIX век", "XX век", "XXI век"];
-    if (!data) return <></>
-    const tags_list = groupBy(data.reduce((acc,element,index)=>{
-        return acc = [...acc,...element.tag];
-    },[]),'name')
-    console.log(tags_list)
-    let filtered_tags_list = Object.keys(groupBy(filtered.reduce((acc,element,index)=>{
-        return acc = [...acc,...element.tag];
-    },[]),'name'))
-    filtered_tags_list = [...filtered_tags_list, ...someNonExcludableTags]
-    console.log(filtered_tags_list)
-    const sorted_tags = sortByTagType(tags_list)
+function BlogTagContainer({data, filtered, active_list, setActive, timeArr, placeArr, formatArr, materialTypeArr, themeArr}) {
+  const timeNonExcludableTags = timeArr;
+  const placeNonExcludableTags = placeArr;
+  const formatNonExcludableTags = formatArr;
+  const materialNonExcludableTags = materialTypeArr;
+  const themeNonExcludableTags = themeArr;
+  
+  if (!data) return <></>
+  const tags_list = groupBy(data.reduce((acc,element,index)=>{
+      return acc = [...acc,...element.tag];
+  },[]),'name')
+  console.log(tags_list)
+  let filtered_tags_list = Object.keys(groupBy(filtered.reduce((acc,element,index)=>{
+      return acc = [...acc,...element.tag];
+  },[]),'name'))
+  console.log(filtered_tags_list)
+  if (timeNonExcludableTags?.includes(active_list[0])) {
+    filtered_tags_list = [...filtered_tags_list, ...timeNonExcludableTags]
+  } else if (placeNonExcludableTags?.includes(active_list[0])) {
+    filtered_tags_list = [...filtered_tags_list, ...placeNonExcludableTags]
+  } else if (formatNonExcludableTags?.includes(active_list[0])) {
+    filtered_tags_list = [...filtered_tags_list, ...formatNonExcludableTags]
+  } else if (materialNonExcludableTags?.includes(active_list[0])) {
+    filtered_tags_list = [...filtered_tags_list, ...materialNonExcludableTags]
+  } else if (themeNonExcludableTags?.includes(active_list[0])) {
+    filtered_tags_list = [...filtered_tags_list, ...themeNonExcludableTags]
+  }
+
+  console.log(filtered_tags_list)
+  const sorted_tags = sortByTagType(tags_list)
+
+  useEffect(()=> {
+    if (active_list?.length > 0) {
+      console.log(active_list[0])
+    }
+  },[active_list])
+
   return (
     <Container>
         <Box
@@ -28,7 +52,7 @@ function BlogTagContainer({data, active_list, setActive, filtered}) {
                 justifyContent: 'flex-start',
                 maxWidth: '100%',
                 flexWrap: 'wrap',
-                my:2
+                my:2,
             }}
         >
             {

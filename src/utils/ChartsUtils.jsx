@@ -51,9 +51,7 @@ export function compareArrays(exceptions, arr_to_check) {
   if (!exceptions || exceptions.length === 0) return true;
   if (
     (arr_to_check.length === 0 && exceptions.includes(null)) ||
-    (arr_to_check.length === 1 &&
-      arr_to_check[0].length === 0 &&
-      exceptions.includes(null))
+    (arr_to_check.length === 1 && arr_to_check[0].length === 0 && exceptions.includes(null))
   )
     return true;
   if (arr_to_check.length === 0) return false;
@@ -293,8 +291,11 @@ export function parseData(data, yearsSet) {
       parts: u.plantPart?.length > 0 ? u.plantPart.map((p) => p.name) : null,
       plant: el.name,
       functions: u.function?.length > 0 ? u.function.map((f) => f) : null,
-      languageAffiliation: u.languageAffiliation?.length
-        ? u.languageAffiliation.map((l) => l.name)
+      languageAffiliation: u.languageAffiliation?.length ? u.languageAffiliation.map((l) => l.name) : null,
+      etymology: u.lexeme.etymology?.length > 0 ? u.lexeme.etymology.map((p) => p.etymon) : null,
+      allSocialClassRels: u.allSocialClassRels?.length > 0 ? u.allSocialClassRels.map((p) => p.name) : null,
+      genre: u.citation.copyOfOriginal.original.genre?.length > 0 
+        ? u.citation.copyOfOriginal.original.genre.map((f) => f) 
         : null,
     }));
     return [...acc, ...dataIndex];
@@ -326,6 +327,9 @@ export function parseData(data, yearsSet) {
           plant: el.plant,
           functions: el.functions,
           languageAffiliation: el.languageAffiliation,
+          etymology: el.etymology,
+          allSocialClassRels: el.allSocialClassRels,
+          genre: el.genre,
         },
       ];
       acc[el.y].find((e) => e.year === el.x).count += el.z; //total
@@ -355,7 +359,7 @@ export function getChartsChip(data, filterField) {
   for (const key in parsed_chart_data) {
     if (Object.hasOwn(parsed_chart_data, key)) {
       const element = parsed_chart_data[key];
-
+      
       if (Array.isArray(element)) {
         element.forEach((elem) => {
           elem.usages.forEach((usage) => {

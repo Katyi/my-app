@@ -85,8 +85,6 @@ function ChartView({ data, color_list, variants }) {
   const parsed_chart_data = parseData(data, yearsSet);
   const countsArr = Object.keys(parsed_chart_data).map(lexeme => parsed_chart_data[lexeme][0].count);
   const maxCount = Math.max(...countsArr);
-  console.log(countsArr)
-  console.log(maxCount)
   const domain = parseDomain(parsed_chart_data, yearsSet);
   const range = [0, 300];
   return (
@@ -99,9 +97,8 @@ function ChartView({ data, color_list, variants }) {
             const updated_chart_data = sortAllData(parsed_chart_data[lexeme], yearsSet);
             const my_plant = parsed_chart_data[lexeme][0].plant
             const my_color = getMyColor(color_list, my_plant)
-            console.log(updated_chart_data)
             const sizeRange = range.map(r => r / maxCount);
-            console.log(sizeRange)
+            
             return (
               <ChartScatter
                 range={range}

@@ -90,16 +90,16 @@ export const ADVANCED_QUERY_REQUEST_CURSOR = (params) => {
           name
           id
         }
-        vetDiseaseAsInSource {
+        allVetDiseaseAsInSource {
           name
         }
-        medicinalForm {
+        allMedicinalForms {
           name
         }
-        plantPartUsedInSource {
+        allPlantPartUsedInSource {
           name
         }
-        plantPartUsed {
+        allPlantPartUsed {
           name
         }
         plantPart {
@@ -108,7 +108,7 @@ export const ADVANCED_QUERY_REQUEST_CURSOR = (params) => {
         lifeFormInSource {
           name
         }
-        storageType {
+        allStorageTypes {
           name
           parent{
             name
@@ -117,13 +117,19 @@ export const ADVANCED_QUERY_REQUEST_CURSOR = (params) => {
             }
           }  
         }
-        ethnoList {
+        allEthnoLists {
+          name
+        }
+        allSocialClassRels {
           name
         }
         placeDistribution {
           name
         }
         placeAcquisition {
+          name
+        }
+        allPlaces {
           name
         }
         originalWord

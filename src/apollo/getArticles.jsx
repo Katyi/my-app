@@ -1,5 +1,29 @@
 import { gql } from "@apollo/client";
 
+export const GET_TAGARTICLES_TYPES = 
+  gql`query getArticlesTag {
+    tagarticles {
+      type {
+        type
+      }
+    }
+  }    
+`;
+
+export const GET_ARTICLES_TAGS_BY_TYPE =
+  gql`query getArticlesTagByType ($type: String) {
+    tagarticles (filters: {type: {type: {exact: $type}}}) {
+      id
+      name
+      type {
+        id
+        color
+        type
+      }
+    }
+  }
+`;
+
 export const GET_ALL_ARTICLES = gql`
     query getArticles {
         articles (

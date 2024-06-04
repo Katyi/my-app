@@ -18,6 +18,9 @@ export const CHARTS_DATA_BY_SCIENTIFIC = ({name}) => {
               }
               lexeme {
                 name
+                etymology {
+                  etymon
+                }
               }
               function{
                 name
@@ -31,10 +34,24 @@ export const CHARTS_DATA_BY_SCIENTIFIC = ({name}) => {
               languageAffiliation{
                 name
               }
+              allSocialClassRels {
+                name
+              }
               citation {
                 copyOfOriginal {
                   creationDateEnd
                   creationDateStart
+                  original {
+                    genre {
+                      name
+                      parent {
+                        name
+                        parent {
+                          name
+                        }
+                      }  
+                    }
+                  }
                 }
               }
             }

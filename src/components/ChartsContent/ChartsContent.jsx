@@ -9,7 +9,7 @@ import { useSearchParams } from "react-router-dom";
 import {
   compareArrays,
   getColors,
-  getFunctionList,
+  getFunctionList
 } from "../../utils/ChartsUtils";
 import ChipSettings from "./ChipSettings";
 const regex = /^.*(?=\s-\s)/;
@@ -35,13 +35,30 @@ const variants = new Map([
       apiName: "function",
       nullName: "функция растения не указана",
       get: (arr) => {
-        if (arr && Array.isArray(arr)) {
+        if (arr ) {
           const array = getFunctionList(arr);
-          return [array.reverse().join(" / ")];
+          return array.map(k => k.reverse().join(" / "));
         }
         return ["функция не указана"];
       },
     },
+  ],
+  [
+    "жанр",
+    {
+      label: "Жанр",
+      verbose_name: "жанр",
+      name: "genre",
+      apiName: "citation",
+      nullName: "жанр не указан",
+      get: (arr) => {
+        if (arr) {
+          const array = getFunctionList(arr);
+          return array.map(k => k.reverse().join(" / "));
+        }
+        return ["жанр не указан"];
+      },
+    }
   ],
   [
     "язык в источнике",
@@ -55,6 +72,28 @@ const variants = new Map([
         return arr && Array.isArray(arr) ? arr : ["не указан"];
       },
     },
+  ],
+  [
+    "этимон",
+    {
+      label: "Этимон",
+      verbose_name: "этимон",
+      name: "etymology",
+      apiName: "lexeme",
+      nullName: "этимон не указан",
+      get: (arr) => {return arr ? arr : ["не указан"]},
+    }
+  ],
+  [
+    "сословие",
+    {
+      label: "Сословие",
+      verbose_name: "сословие",
+      name: "allSocialClassRels",
+      apiName: "allSocialClassRels",
+      nullName: "сословие не указано",
+      get: (arr) => (arr && Array.isArray(arr) ? arr : ["не указано"]),
+    }
   ],
 ]);
 const TemplateBox = ({ text }) => (
@@ -81,10 +120,8 @@ function ChartsContent() {
   const [color_list, setColor_list] = useState([]);
 
   const filtered_data = useMemo(()=>filterDataByExceptions(edges, exceptions, variants),[edges, exceptions])
-  // console.log(filtered_data)
+  
   useEffect(() => {
-    // console.log(name)
-    // console.log(data)
     if (!!name) loadData({ name });
   }, [loadData, name]);
 
@@ -95,8 +132,6 @@ function ChartsContent() {
     if (freshParams) setName(freshParams);
     setExceptions({})
   }, [params]);
-
-  
 
   useEffect(() => {
     if (edges && edges.length > 0) {
@@ -134,18 +169,32 @@ function ChartsContent() {
             // Проверяем каждый вариант
                 // Проверяем есть ли хоть одно исключение
                 const activeVariants = Array.from(variants.values()).filter(v=>!!exceptions[v.verbose_name] && exceptions[v.verbose_name].length>0) || []
+                
                 if (activeVariants.length!==0) { 
                   const atLeastOneFalse = activeVariants.map(
                     (variant) => {
                       const variantName = variant.verbose_name;
                       if (!exceptions[variantName] || exceptions[variantName].length===0) return true;
-
+                      
+                      if (variant.apiName === "citation") {
+                        return compareArrays(
+                          exceptions[variantName],
+                          variant.get(us[variant.apiName].copyOfOriginal.original.genre)
+                        )
+                      }
+                      if (variant.apiName === "lexeme") {
+                        return compareArrays(
+                          exceptions[variantName],
+                          variant.get(us[variant.apiName].etymology.map(p => p.etymon))
+                        )
+                      }
                       if (variant.apiName === "function") {
                         return compareArrays(
                           exceptions[variantName],
                           variant.get(us[variant.apiName])
                         );
                       }
+                      
                       return compareArrays(
                         exceptions[variantName],
                         variant.get(us[variant.apiName]).map((p) => p.name)
@@ -176,7 +225,7 @@ function ChartsContent() {
       </Grid>
       {/* Настройка графика */}
       {data && edges && edges?.length > 0 && (
-        <Grid item xs={12} >
+        <Grid item xs={12}>
           <ChipSettings
             data={data}
             variants={variants}
@@ -208,7 +257,7 @@ function ChartsContent() {
           name?.length > 0 &&
           data?.plantsConnection.edges.length === 0 && (
             <TemplateBox text={"Растение не найдено"} />
-          )}
+        )}
         {!data && !called && name?.length === 0 && (
           <TemplateBox text={"Растение не выбрано"} />
         )}

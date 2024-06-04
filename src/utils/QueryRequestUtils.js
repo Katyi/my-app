@@ -126,14 +126,9 @@ function getStringTypeFour(label, text, list, variant) {
   const variantString =
     variant === "inList" ? JSON.stringify(list) : `"${text}"`;
   return `
-  ${label}: {
-    name:{${variant}:${variantString}}
-  }
-  Or: {
-    plantUsage: {
-      ${label}: {
-        name:{${variant}:${variantString}}
-      }
+  plantUsage: {
+    ${label}: {
+      name:{${variant}:${variantString}}
     }
   }inDeepMarker`;
 }
@@ -301,17 +296,7 @@ function getStringNestedTypeEleven(label, text, list, variant) {
     if (!splittedList[0]) return `
      ${label}:{name: {exact: ""}}inDeepMarker
     `;
-    
-    // return `
-    //     ${label}:{${splittedList[0]}}
-    //     Or: {
-    //     plantUsage: {
-    //       function: {
-    //         name: {exact: "${newText}"}
-    //       }
-    //     }
-    //   }inDeepMarker
-    // `;
+
     return `  
       plantUsage: {
         ${label}:{${splittedList[0]}}
@@ -346,16 +331,6 @@ function getStringNestedTypeEleven(label, text, list, variant) {
       ${label}:{name: {inList: []}}inDeepMarker
     `;
 
-    // return `
-    //   ${label}:{${splittedList[0]}}
-    //   Or: {
-    //     plantUsage: {
-    //       function: {
-    //         name: {inList: [${newArr1[0].map(e => `"${e}"`)}]}
-    //       }
-    //     }
-    //   }inDeepMarker
-    // `;
     return `
       plantUsage: {
         ${label}:{${splittedList[0]}}
@@ -473,17 +448,11 @@ function getStringNestedTypeThirteen(label, text, list, variant) {
     `;
     
     return `
-      storageType:{
-        ${splittedList[0]}
-      }
-      Or: {
-        plantUsage: {
-          storageType: {
-            ${splittedList[0]}
-          }
+      plantUsage: {
+        storageType: {
+          ${splittedList[0]}
         }
-      }
-      inDeepMarker
+      }inDeepMarker
     `;
   } else {
     variant = "inList";
@@ -516,15 +485,11 @@ function getStringNestedTypeThirteen(label, text, list, variant) {
     `;
 
     return `
-    storageType:{
-        ${splittedList[0]}
-    }
-    Or: {
-      storageType: {
-        ${splittedList[0]}
-      }
-    }
-    inDeepMarker
+      plantUsage: {
+        storageType: {
+          ${splittedList[0]}
+        }
+      }inDeepMarker
     `;
   }
 }

@@ -15,7 +15,7 @@ import { GET_CHARTS_SUGGESTIONS_LAT_SCIENTIFIC_NAME } from "../../apollo/getSugg
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import ColorPicker from "../ColorPicker/ColorPicker";
-function ChartsSettings({ onNameChanged, initial = {initial: ""}, color_list, onColorChanged=(plant,color)=>{} }) {
+function ChartsSettings({ onNameChanged, initial = "", color_list, onColorChanged=(plant,color)=>{} }) {
   const color = "#d0c7b6";
   const [page, setPage] = useState(1);
   const [options, setOptions] = useState([]);
@@ -108,8 +108,9 @@ function ChartsSettings({ onNameChanged, initial = {initial: ""}, color_list, on
                             (c) => String(values.list[itemInd]).includes(c.name) 
                           )?.color || "#7e71711c";
                           return (
-                            <Stack key={itemInd + "   "} direction={"row"}>
-                              <Stack justifyContent={"center"} pr={1} sx={{}}>
+                            <Stack key={itemInd + "   "} direction={"row"} alignItems={"center"}>
+                              {/* Выбор цвета */}
+                              <Stack justifyContent={"center"} pr={1}>
                                 <ColorPicker
                                   anchorEl={anchorEl}
                                   setAnchorEl={setAnchorEl}
@@ -122,6 +123,8 @@ function ChartsSettings({ onNameChanged, initial = {initial: ""}, color_list, on
                                 >
                                 </ColorPicker>
                               </Stack>
+                              {/* Поле инпут-список */}
+                              
                               <Box
                                 maxWidth="sm"
                                 sx={{
@@ -134,17 +137,17 @@ function ChartsSettings({ onNameChanged, initial = {initial: ""}, color_list, on
                                   position: "relative",
                                 }}
                               >
-                                   <Typography
-                                    variant="simple_search_caption"
-                                    sx={{
-                                      position: "absolute",
-                                      display:values.list[itemInd].length>0?'none':'block',
-                                      top: { xs: "16px", sm: "-14px" },
-                                      transition: "all .5s linear",
-                                    }}
-                                  >
-                                    Введите латинское или русское название растения
-                                  </Typography>
+                                <Typography
+                                  variant="simple_search_caption"
+                                  sx={{
+                                    position: "absolute",
+                                    display:values.list[itemInd].length>0?'none':'block',
+                                    top: { xs: "16px", sm: "-14px" },
+                                    transition: "all .5s linear",
+                                  }}
+                                >
+                                  Введите латинское или русское название растения
+                                </Typography>
                                 
                                 <Tooltip 
                                   title={values.list[itemInd]|| "Например: виноград"}
@@ -164,7 +167,7 @@ function ChartsSettings({ onNameChanged, initial = {initial: ""}, color_list, on
                                     },
                                   }} 
                                 >
-
+                                  
                                 <Autocomplete
                                   freeSolo
                                   value={values.list[itemInd]}
@@ -250,12 +253,11 @@ function ChartsSettings({ onNameChanged, initial = {initial: ""}, color_list, on
                                     );
                                   }}
                                   renderOption={(props, option) => {
-                                    delete props['key'];
                                     return (
-                                      <Box component="li" key={option} {...props} >
+                                      <Box component={"li"} key={props.key} {...props}>
                                         {option?.replace("$$$", " - ")}
                                       </Box>
-                                    );
+                                    )
                                   }}
                                   ListboxProps={{
                                     onScroll: handleScroll,
@@ -273,6 +275,8 @@ function ChartsSettings({ onNameChanged, initial = {initial: ""}, color_list, on
                                 />
                                 </Tooltip>
                               </Box>
+
+                              {/* Иконкa удаления поля поиска */}
                               <IconButton
                                 width={16}
                                 height={16}
