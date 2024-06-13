@@ -24,7 +24,8 @@ function ExactAutocomplete({
       case 'Используемая часть растения (как в источнике)':
       case 'Способ обработки и запасания':
       case 'Этноним':
-        case 'Место использования':
+      case 'Сословие': // type 4
+      case 'Место использования':
         return 'plantUsages'
       default:
         return 'usages'

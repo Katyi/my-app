@@ -1,5 +1,6 @@
 import { Box, Chip, Divider, Stack, Typography } from "@mui/material";
 import { collect_whole_line } from "./AdvancedResultUtils";
+import { useLocation } from "react-router-dom";
 
 export const CHART_COLORS_LIST = [
   "#1f77b4",
@@ -28,7 +29,7 @@ export function getFunctionList(arr) {
   return arr
     .map((e) =>
       collect_whole_line("parent", e)
-        .reverse()
+        // .reverse()
         .map((n) => n.name)
     )
     .filter((element, index, arr) => {
@@ -42,7 +43,7 @@ export function getFunctionList(arr) {
 }
 
 export function getColors(labels) {
-  return CHART_COLORS_LIST.slice(0, 4).reduce(
+  return CHART_COLORS_LIST.reduce(
     (acc, color, i) => [...acc, { name: labels[i] || "", color: color }],
     []
   );
@@ -50,8 +51,8 @@ export function getColors(labels) {
 export function compareArrays(exceptions, arr_to_check) {
   if (!exceptions || exceptions.length === 0) return true;
   if (
-    (arr_to_check.length === 0 && exceptions.includes(null)) ||
-    (arr_to_check.length === 1 && arr_to_check[0].length === 0 && exceptions.includes(null))
+    (arr_to_check?.length === 0 && exceptions.includes(null)) ||
+    (arr_to_check?.length === 1 && arr_to_check[0]?.length === 0 && exceptions?.includes(null))
   )
     return true;
   if (arr_to_check.length === 0) return false;
@@ -59,7 +60,7 @@ export function compareArrays(exceptions, arr_to_check) {
   for (const exception of exceptions) {
     if (
       arr_to_check.includes(exception) ||
-      !!arr_to_check.find((e) => e.includes(exception))
+      !!arr_to_check.find((e) => e?.includes(exception))
     ) {
       // Если хотя бы один элемент присутствует или один из элементов включает исключение, возвращаем true
       return true;
@@ -102,6 +103,7 @@ export const renderTooltip = (props, color_list, variants) => {
   if (active && payload && payload.length) {
     const data = payload[0] && payload[0].payload;
     const plants = getPlants(data?.usages);
+    
     return (
       <Box
         style={{
@@ -251,9 +253,10 @@ export const renderTooltip = (props, color_list, variants) => {
   }
   return null;
 };
+
 export const renderCustomizedLabel = ({ viewBox }, lexeme) => {
   const { x, y } = viewBox;
-  const maxLength = 20;
+  const maxLength = 25;
   let newText = "";
 
   if (lexeme.length > maxLength) {
@@ -272,7 +275,7 @@ export const renderCustomizedLabel = ({ viewBox }, lexeme) => {
   }
 
   return (
-    <text x={x} y={y} fontSize={12} textAnchor="middle">
+    <text x={x} y={y} fontSize={10} textAnchor="middle">
       {lexeme}
     </text>
   );
@@ -282,15 +285,18 @@ function getMyColor(color_list, name) {
   return color_list.find((c) => c.name === name)?.color || "#8984D8";
 }
 export function parseData(data, yearsSet) {
+  const {pathname} = useLocation();
   //сортировка данных для отображения на графике
   const chart_data = data.reduce((acc, el, index) => {
     const dataIndex = el.usage.map((u) => ({
-      y: u.lexeme.name,
+      y: pathname === "/charts" ? u.lexeme.name : pathname === "/charts1" 
+        ? u.scientificName[0]?.name.length > 0  ? `${u.scientificName[0]?.name} - ${u.scientificName[0].rusNomenclatureName}` : "Не идентифицировано" : null,
+      // u.citation.copyOfOriginal.original.genre[0].name,
       x: u.citation.copyOfOriginal.creationDateEnd,
       z: +u.countLexeme,
       parts: u.plantPart?.length > 0 ? u.plantPart.map((p) => p.name) : null,
       plant: el.name,
-      functions: u.function?.length > 0 ? u.function.map((f) => f) : null,
+      functions: u.allFunctions?.length > 0 ? u.allFunctions.map((f) => f) : null,
       languageAffiliation: u.languageAffiliation?.length ? u.languageAffiliation.map((l) => l.name) : null,
       etymology: u.lexeme.etymology?.length > 0 ? u.lexeme.etymology.map((p) => p.etymon) : null,
       allSocialClassRels: u.allSocialClassRels?.length > 0 ? u.allSocialClassRels.map((p) => p.name) : null,
@@ -298,6 +304,7 @@ export function parseData(data, yearsSet) {
         ? u.citation.copyOfOriginal.original.genre.map((f) => f) 
         : null,
     }));
+    // console.log([...acc, ...dataIndex])
     return [...acc, ...dataIndex];
   }, []);
 
@@ -336,8 +343,47 @@ export function parseData(data, yearsSet) {
     }
     return acc;
   }, {});
+  // console.log(fixedToReturn)
   return fixedToReturn;
 }
+export function parseDataForFunctionTable(data, yearsSet) {
+  // console.log(data)
+  //сортировка данных для отображения на графике
+  const chart_data = data.reduce((acc, el, index) => {
+    // const dataIndex = el.usage.map((u) => ({
+    const dataIndex = {
+      y: el.lexeme.name,
+      allSocialClassRels: el.allSocialClassRels?.length > 0 ? el.allSocialClassRels.map((p) => p.name) : null,
+      allEthnoLists: el.allEthnoLists?.length > 0 ? el.allEthnoLists.map((p) => p.name) : null,
+    };
+    // console.log([...acc, ...dataIndex])
+    return [...acc, dataIndex];
+  }, []);
+
+  const fixedToReturn = chart_data.reduce((acc, el, index) => {
+    if (!acc[el.y]) acc[el.y] = [];
+    if (acc[el.y].length === 0) {
+      acc[el.y] = [
+        ...acc[el.y],
+        {
+          lexeme: el.y,
+          usages: [],
+        },
+      ];
+    } 
+    acc[el.y][0].usages = [
+      ...acc[el.y][0].usages,
+      {
+        allSocialClassRels: el.allSocialClassRels,
+        allEthnoLists: el.allEthnoLists,
+      },
+    ];
+    return acc;
+  }, {});
+  // console.log(fixedToReturn)
+  return fixedToReturn;
+}
+
 export function sortAllData(chart_data, yearsSet) {
   //сортируем массив по году
   return [
@@ -351,7 +397,7 @@ export function getChartsChip(data, filterField) {
   const variant = filterField?.name || "parts";
   const yearsSet = new Set();
   const parsed_chart_data = parseData(
-    data?.plantsConnection.edges.map((e) => e.node),
+    data?.map((e) => e.node),
     yearsSet
   );
 
@@ -382,8 +428,49 @@ export function getChartsChip(data, filterField) {
       }
     }
   }
+  // console.log([...general_data])
   return [...general_data];
 }
+export function getChartsChipForFunctionTable(data, filterField) {
+  const variant = filterField?.name || "allSocialClassRels";
+  // console.log(variant)
+  const yearsSet = new Set();
+  const parsed_chart_data = parseDataForFunctionTable(
+    data?.map((e) => e.node),
+    yearsSet
+  );
+
+  let general_data = new Set();
+  for (const key in parsed_chart_data) {
+    if (Object.hasOwn(parsed_chart_data, key)) {
+      const element = parsed_chart_data[key];
+      if (Array.isArray(element)) {
+        element?.forEach((elem) => {
+          elem.usages?.forEach((usage) => {
+            if (Array.isArray(usage[variant])) {  
+              usage[variant].forEach((p) => {
+                if (typeof p === "object") {
+                  const functionList = getFunctionList([p]).map((arr) =>
+                    arr.reverse().join(" / ")
+                  );
+                  functionList.forEach((usageFunc) => {
+                    general_data.add(usageFunc);
+                  });
+                } else {
+                  general_data.add(p);
+                }
+              });
+            } else general_data.add(null);
+          });
+        });
+      }
+    }
+  }
+  // console.log([...general_data])
+  return [...general_data];
+
+}
+
 export function getAllChartsChip(data, variants = new Map()) {
   if (!data) return null;
   const allChips = {};
@@ -393,6 +480,24 @@ export function getAllChartsChip(data, variants = new Map()) {
   }
   return allChips;
 }
+export function getAllChartsChipForFunctionTable(data, variants = new Map()) {
+  if (!data) return null;
+  const allChips = {};
+  for (let key of variants.keys()) {
+    const el = variants.get(key);
+    allChips[key] = getChartsChipForFunctionTable(data, el);
+  }
+  return allChips;
+}
+// export function getAllChartsChipByLexeme(data, variants = new Map()) {
+//   if (!data) return null;
+//   const allChips = {};
+//   for (let key of variants.keys()) {
+//     const el = variants.get(key);
+//     allChips[key] = getChartsChipByLexeme(data, el);
+//   }
+//   return allChips;
+// }
 
 export function deleteExceptionDots(data, exceptions = []) {
   // console.log("filtered", data.map(el=>Array.isArray(el?.parts) && el?.parts.reduce((a,elem,i)=>!a && exceptions.includes(elem),false)?{}:el));

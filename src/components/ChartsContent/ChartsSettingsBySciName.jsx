@@ -15,7 +15,8 @@ import { GET_CHARTS_SUGGESTIONS_LAT_SCIENTIFIC_NAME } from "../../apollo/getSugg
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import ColorPicker from "../ColorPicker/ColorPicker";
-function ChartsSettings({ onNameChanged, initial = "", color_list, onColorChanged=(plant,color)=>{} }) {
+
+function ChartsSettingsBySciName({ onNameChanged, initial = "", color_list, onColorChanged=(plant,color)=>{} }) {
   const color = "#d0c7b6";
   const [page, setPage] = useState(1);
   const [options, setOptions] = useState([]);
@@ -56,8 +57,8 @@ function ChartsSettings({ onNameChanged, initial = "", color_list, onColorChange
 
   const loadMoreOptions = () => {
     const requestData = {
-      text: values.text,
-      textSub: ` ${values.text}`,
+      text: values.list[0],
+      textSub: ` ${values.list[0]}`,
       offset: page * 10,
     };
     setOptions([...generateOptions()]);
@@ -162,7 +163,7 @@ function ChartsSettings({ onNameChanged, initial = "", color_list, onColorChange
                                         p: 1,
                                         alignItems: "center",
                                         border: "1px solid #e0e0e0",
-                                        fontSize: "13px",
+                                        fontSize: "13px"
                                       },
                                     },
                                   }} 
@@ -188,9 +189,9 @@ function ChartsSettings({ onNameChanged, initial = "", color_list, onColorChange
                                     }
                                   }}
                                   sx={{
-                                    height: "100%",
-                                    py: 1,
-                                    border: "0",
+                                    // height: "100%",
+                                    // py: 1,
+                                    // border: "0",
                                   }}
                                   options={generateOptions(itemInd)}
                                   renderInput={(params) => {
@@ -235,6 +236,7 @@ function ChartsSettings({ onNameChanged, initial = "", color_list, onColorChange
                                         value={values.list[itemInd]}
                                         sx={{
                                           height: "100%",
+                                          py: 1,
                                           border: "0",
                                           pl: { xs: "12px", sm: "12px" },
                                           textTransform: "uppercase",
@@ -245,6 +247,7 @@ function ChartsSettings({ onNameChanged, initial = "", color_list, onColorChange
                                           letterSpacing: "0.13em",
                                           alignItems: "center",
                                           lineHeight: "30px",
+                                          marginBottom: "-2px",
                                           "&>input": {
                                             pt: 0,
                                           },
@@ -253,8 +256,9 @@ function ChartsSettings({ onNameChanged, initial = "", color_list, onColorChange
                                     );
                                   }}
                                   renderOption={(props, option) => {
+                                    delete props['key'];
                                     return (
-                                      <Box component={"li"} key={props.key} {...props}>
+                                      <Box component={"li"} key={option} {...props}>
                                         {option?.replace("$$$", " - ")}
                                       </Box>
                                     )
@@ -335,4 +339,4 @@ function ChartsSettings({ onNameChanged, initial = "", color_list, onColorChange
   );
 }
 
-export default ChartsSettings;
+export default ChartsSettingsBySciName;

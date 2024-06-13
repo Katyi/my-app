@@ -271,10 +271,14 @@ function getMultipleStringForNestedText(arrOfValues = [], variant) {
   );
 }
 
-function getStringNestedTypeEleven(label, text, list, variant) {
+export function getStringNestedTypeEleven(label, text, list, variant) {
   let newArr = [];
   let newArr1 = [];
   let newText = "";
+  // console.log(list)
+  // console.log(variant)
+  // console.log(text)
+  // console.log(label)
 
   if (variant === "iContains") {
     variant = "exact";

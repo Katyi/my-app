@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { _collect_whole_line } from "./getSimpleSuggestions";
 
 export const GET_SUGGESTIONS_LAT_NAME_OF_LATIN_SOURCE = gql`
 query GetSuggestionsLatUsageNameOfLatinSource($text: String!,$textSub: String!,$offset:Int!) {
@@ -33,7 +34,7 @@ query GetSuggestionsLatScientificName($text: String!,$textSub: String!,$offset:I
    }
  }
 `;
-
+// Поиск для select для графика для scientificName и rusNomenclatureName
 export const GET_CHARTS_SUGGESTIONS_LAT_SCIENTIFIC_NAME = gql`
 query GetSuggestionsLatScientificName($text: String!,$textSub: String!,$offset:Int!) {
   usages(
@@ -52,6 +53,24 @@ query GetSuggestionsLatScientificName($text: String!,$textSub: String!,$offset:I
             }
           }
         }
+      }
+    }
+   ) {
+     scientificName{
+       name,
+       rusNomenclatureName
+     }
+   }
+ }
+`;
+export const GET_CHARTS_SUGGESTIONS_LAT_SCIENTIFIC_NAME1 = gql`
+query GetSuggestionsLatScientificName($text: String!,$textSub: String!,$offset:Int!) {
+  usages(
+    pagination: {limit: 20, offset: $offset}
+    filters: {
+      scientificName: {name: {iStartsWith: $text}}, 
+      Or: {
+        scientificName: {name: {iContains: $textSub}}
       }
     }
    ) {
@@ -170,4 +189,46 @@ query GetSuggestionsLatPlantName($text: String!,$textSub: String!,$offset:Int!) 
      }
    }
  }
+`;
+export const GET_SUGGESTIONS_FUNCTION =
+  gql`
+  query GetSuggestionsCyrLexeme($text: String!,$textSub: String!,$offset:Int!) {
+    plantUsages (
+      pagination: {limit: 20, offset: $offset}
+      order:{
+        function:{name:ASC}
+      }
+      filters: {
+        function:{name:{iStartsWith:$text}},
+        Or:{
+          function:{name:{iContains:$textSub}}
+          }
+      }
+    ) {
+      function {
+        id
+        name
+        parent {
+          id
+          name
+          parent {
+            id
+            name
+            parent {
+              id
+              name
+              parent {
+                id
+                name
+                parent {
+                  id
+                  name
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 `;

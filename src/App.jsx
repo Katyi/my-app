@@ -22,6 +22,9 @@ const SourcePage =lazy(()=> import("./pages/SourcePage/SourcePage"));
 const AllSourcesPage =lazy(()=> import("./pages/AllSourcesPage/AllSourcesPage"));
 const PostPage =lazy(()=> import("./pages/PostPage/PostPage"));
 const ChartsPage =lazy(()=> import("./pages/ChartsPage/ChartsPage"));
+const ChartsPage1 =lazy(()=> import("./pages/ChartsPage1/ChartsPage1"));
+const ChartsPage2 =lazy(()=> import("./pages/ChartsPage2/ChartsPage2"));
+const ChartsPage3 =lazy(()=> import("./pages/ChartsPage3/ChartsPage3"));
 
 function App() {
   AOS.init(AOS_INITIAL_OPTIONS)
@@ -42,6 +45,9 @@ function App() {
           <Route path="/picture/:id" element={<PicturePage />} />
           <Route path="/all-sources" element={<AllSourcesPage />} />
           <Route path="/charts" element={<ChartsPage />} />
+          <Route path="/charts1" element={<ChartsPage1 />} />
+          <Route path="/charts2" element={<ChartsPage2 />} />
+          <Route path="/charts3" element={<ChartsPage3 />} />
         </Route>
       </Routes>
     </ThemeProvider>

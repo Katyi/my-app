@@ -33,6 +33,7 @@ function ChipAutocomplete({
       case 'Используемая часть растения (как в источнике)': // type 4
       case 'Способ обработки и запасания': // type 13
       case 'Этноним': // type 4
+      case 'Сословие': // type 4
       case 'Место использования': // type 9
         return 'plantUsages'
       default:

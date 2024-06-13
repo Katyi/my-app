@@ -1,9 +1,9 @@
 import { Box, Typography } from "@mui/material";
 import React from "react";
 import CustomHelmet from "../../components/Helmet/CustomHelmet";
-import LexemeScatterChartContent from "../../components/ChartsContent/LexemeScatterChart/LexemeScatterChartContent";
+import FunctionTableContent from "../../components/ChartsContent/FunctionTable/FunctionTableContent";
 
-function ChartsPage() {
+function ChartsPage3() {
   return (
     <Box
       sx={{
@@ -26,9 +26,9 @@ function ChartsPage() {
       >
         Визуализация
       </Typography>
-      <LexemeScatterChartContent />
+      <FunctionTableContent />
     </Box>
   );
 }
 
-export default ChartsPage;
+export default ChartsPage3;

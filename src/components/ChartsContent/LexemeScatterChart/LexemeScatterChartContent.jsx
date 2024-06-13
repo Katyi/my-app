@@ -1,17 +1,19 @@
 import { Box, Grid, Typography } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
-import ChartView from "./ChartView";
-import ChartsSettings from "./ChartsSettings";
-import { CHARTS_DATA_BY_SCIENTIFIC } from "../../apollo/chartSearch";
+// import ChipSettings from "./ChipSettings";
+import ChartsSettingsBySciName from "../ChartsSettingsBySciName";
+import LexemeScatterChartChipSettings from "./LexemeScatterChartChipSettings";
+import LexemeScatterChartView from "./LexemeScatterChartView";
+import { CHARTS_DATA_BY_SCIENTIFIC } from "../../../apollo/chartSearch";
 import { useLazyQuery } from "@apollo/client";
-import ProgressBlock from "../ProgressBlock/ProgressBlock";
-import { useSearchParams } from "react-router-dom";
+import ProgressBlock from "../../ProgressBlock/ProgressBlock";
+import { useLocation, useSearchParams } from "react-router-dom";
 import {
   compareArrays,
   getColors,
   getFunctionList
-} from "../../utils/ChartsUtils";
-import ChipSettings from "./ChipSettings";
+} from "../../../utils/ChartsUtils";
+
 const regex = /^.*(?=\s-\s)/;
 
 const variants = new Map([
@@ -32,7 +34,7 @@ const variants = new Map([
       label: "Функции растения",
       verbose_name: "функция растения",
       name: "functions",
-      apiName: "function",
+      apiName: "allFunctions",
       nullName: "функция растения не указана",
       get: (arr) => {
         if (arr ) {
@@ -109,20 +111,25 @@ const TemplateBox = ({ text }) => (
   </Box>
 );
 
-function ChartsContent() {
+function LexemeScatterChartContent() {
+  const {pathname} = useLocation();
   const [params, setParams] = useSearchParams();
   const [name, setName] = useState(params.getAll("plant") || [""]);
   const [exceptions, setExceptions] = useState({});
   const [loadData, { called, loading, data, error }] = useLazyQuery(
     CHARTS_DATA_BY_SCIENTIFIC({ name })
   );
+  
   const edges = data?.plantsConnection?.edges;
+  console.log(edges)
   const [color_list, setColor_list] = useState([]);
 
   const filtered_data = useMemo(()=>filterDataByExceptions(edges, exceptions, variants),[edges, exceptions])
   
   useEffect(() => {
-    if (!!name) loadData({ name });
+    if (!!name) {
+      loadData({ name })
+    };
   }, [loadData, name]);
 
   useEffect(() => {
@@ -188,7 +195,7 @@ function ChartsContent() {
                           variant.get(us[variant.apiName].etymology.map(p => p.etymon))
                         )
                       }
-                      if (variant.apiName === "function") {
+                      if (variant.apiName === "allFunctions") {
                         return compareArrays(
                           exceptions[variantName],
                           variant.get(us[variant.apiName])
@@ -212,9 +219,10 @@ function ChartsContent() {
 
   return (
     <Grid container rowGap={2} rowSpacing={2} pt={4}>
-      {/* Input для названия растения */}
+      {/* ИНПУТЫ - ВЫПАДАЮЩИЕ МЕНЮ */}
       <Grid item xs={12}>
-        <ChartsSettings
+      {/* Input для названия растения */}
+        <ChartsSettingsBySciName
           onNameChanged={(v) => {
             setParams({ plant: v });
           }}
@@ -223,10 +231,10 @@ function ChartsContent() {
           color_list={color_list}
         />
       </Grid>
-      {/* Настройка графика */}
+      {/* Настройка графика - ТЭГИ */}
       {data && edges && edges?.length > 0 && (
         <Grid item xs={12}>
-          <ChipSettings
+          <LexemeScatterChartChipSettings
             data={data}
             variants={variants}
             exceptions={exceptions}
@@ -243,14 +251,12 @@ function ChartsContent() {
         minHeight={420}
       >
         {data && edges && edges?.length > 0 && (
-          <>
-            {/**/}{" "}
-            <ChartView
-              data={filtered_data}
-              color_list={color_list}
-              variants={variants}
-            />
-          </>
+          // график лексем - точки
+          <LexemeScatterChartView
+            data={filtered_data}
+            color_list={color_list}
+            variants={variants}
+          />
         )}
         {!loading &&
           called &&
@@ -269,4 +275,4 @@ function ChartsContent() {
   );
 }
 
-export default ChartsContent;
+export default LexemeScatterChartContent;

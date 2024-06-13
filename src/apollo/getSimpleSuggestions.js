@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 
-function _collect_whole_line(parentNodeAttributeName, node) {
+export function _collect_whole_line(parentNodeAttributeName, node) {
   if (parentNodeAttributeName in node && node[parentNodeAttributeName]) {
     return [node, ..._collect_whole_line(parentNodeAttributeName, node[parentNodeAttributeName])]
   }
@@ -653,7 +653,7 @@ query GetSuggestionsEthnoList($text: String!, $offset:Int!) {
 export const GET_SIMPLE_SUGGESTIONS_SOCIAL_CLASS = {
   query: gql`
 query GetSuggestionsSocialClass($text: String!, $offset:Int!) {
-  usages(
+  plantUsages(
     pagination: {limit: 10, offset: $offset}
     filters: {
       socialClassRel: {name: {iStartsWith:$text}}
@@ -667,7 +667,7 @@ query GetSuggestionsSocialClass($text: String!, $offset:Int!) {
 `,
 subQuery: gql`
 query GetSuggestionsSocialClass($text: String!, $offset:Int!) {
-  usages(
+  plantUsages(
     pagination: {limit: 10, offset: $offset}
     filters: {
       socialClassRel: {name: {iContains:$text}}

@@ -8,17 +8,21 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
-import ChipList from "./ChipList";
-import { getAllChartsChip, getArraysTotalLengthFromObject } from "../../utils/ChartsUtils";
-function ChipSettings({
+import ChipList from "../ChipList";
+import { getAllChartsChip, getArraysTotalLengthFromObject } from "../../../utils/ChartsUtils";
+
+function SciNameScatterChartChipSettings({
   variants=new Map(),
   exceptions,
   onUpdate,
   data
 }) {
 const [openSetting, setOpenSetting] = useState(false)
-const allChips = getAllChartsChip( data,variants)
+const allChips = getAllChartsChip(data.lexemesConnection.edges,variants)
 const length = getArraysTotalLengthFromObject(exceptions)
+
+console.log(data)
+console.log(allChips)
 
   return (
     <Container maxWidth="lg" sx={{}}>
@@ -96,7 +100,7 @@ const length = getArraysTotalLengthFromObject(exceptions)
         }
         </Box>
       </Collapse>
-      {/* блок активных чипов - зачем пока не понятно */}
+      {/* блок активных чипов - видно при закрытии тэгов */}
       <Collapse in={!openSetting} unmountOnExit orientation="vertical" timeout={{ enter: 1000, exit: -200 }}>
         <Box borderLeft={'2px solid #D0C7B6'} pl={2} gap={1} display={'flex'} flexDirection={'column'} alignItems={'flex-start'} >
           {
@@ -126,4 +130,4 @@ const length = getArraysTotalLengthFromObject(exceptions)
   );
 }
 
-export default ChipSettings;
+export default SciNameScatterChartChipSettings;
