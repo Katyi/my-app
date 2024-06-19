@@ -124,50 +124,9 @@ export const CHARTS_DATA_BY_LEXEME = ({name}) => {
   `
 };
 
-export const CHARTS_DATA_BY_FUNCTION_OLD = ({name}) => {
-  return gql`
-    query DataForChartByFunction {
-      functionsConnection(filters: { name: { inList: ${JSON.stringify(name)} } }) {
-        edges {
-          node {
-            name
-            usage {
-              lexeme {
-                name
-              }
-              scientificName {
-                name
-                rusNomenclatureName
-              }
-              plantPart {
-                name
-              }
-              allStorageTypes {
-                name
-              }
-              medicinalForm {
-                name
-              }
-              allSocialClassRels {
-                name
-              }
-              allEthnoLists {
-                name
-              }
-            }
-          }
-        }
-      }
-    }
-  `
-};
 export const CHARTS_DATA_BY_FUNCTION = (obj) => {
   const {filters="", page, offset, after} = obj
   let afterString = page !== 0 ? after || null : null;
-  // let afterString = after;
-  // console.log(afterString)
-  // console.log(offset)
-  // console.log(filters)
   
   return gql`
     query DataForChartByFunction1 {
@@ -213,12 +172,46 @@ export const CHARTS_DATA_BY_FUNCTION = (obj) => {
     }
   `
 };
-// filters: {plantUsage: {function: { name: { inList: ${JSON.stringify(name)}}}}}
-export const ALL_GENRES_NAMES = () => {
+
+export const CHARTS_DATA_BY_ORIGINAL = (params) => {
+  const {filters="", page, offset, after} = params;
+  let afterString = page !== 0 ? after || null : null;
+  
   return gql`
-    query getAllGenresNames {
-      genre(filters: {name: {iStartsWith: ""}}) {
-        name
+    query DataForTableByOriginal {
+      usagesConnection (
+        first: ${offset}
+        after:${afterString ? '"' + afterString + '"' : afterString}
+        filters: {
+          citation: {
+            copyOfOriginal: {
+              original: {
+                encoding: {inList: ${JSON.stringify(filters)} }
+              }
+            }
+          }
+        }
+        order: {
+          lexeme: {
+            name: ASC
+          }
+        }
+      ) {
+        totalCount
+        edges {
+          node {
+            lexeme {
+              name
+            }
+            citation {
+              copyOfOriginal {
+                original {
+                  encoding
+                }
+              }
+            }
+          }
+        }
       }
     }
   `

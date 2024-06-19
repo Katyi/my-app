@@ -10,8 +10,6 @@ import VideoContent from "./VideoContent";
 function Flora18CentureContent({data,isOther}) {
   const [status, setStatus] = useState(data.map(({id})=>({id,showMore:true})))
 
-  // console.log(status)
-
   function checkShowMoreIconStatus(collection) {
     let result = []
     collection.forEach((typographyElement)=>{
@@ -26,11 +24,11 @@ function Flora18CentureContent({data,isOther}) {
       const lines = Math.floor(typographyHeight / typographyLineHeight);
       
       const approximateCharsInView = Math.floor(typographyWidth / typographyFontSize)*lines;
-      // console.log(approximateCharsInView)
+      
       const cleanHTML = DOMPurify.sanitize(data.filter(p=>p.id===id)?.['0']?.text, {
         USE_PROFILES: { html: true },
       });
-      // console.log(cleanHTML.length)
+      
       result.push({
         id,
         showMore:cleanHTML.length>= approximateCharsInView-3

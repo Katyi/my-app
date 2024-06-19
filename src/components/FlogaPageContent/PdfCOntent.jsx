@@ -9,7 +9,6 @@ import { getFormatedDate } from "../../utils/FloraUtils";
 import RawHTML from "../SimpleResultBlock/RawHTML";
 import IconsBlock from "./IconsBlock";
 import MoreIcon from "./MoreIcon";
-import { Calculate } from "@mui/icons-material";
 
 function PdfCOntent({ post,pageView=false }) {
   const { title, author, pubDate, preview, pdf = [], text,id,showMore } = post;
@@ -108,7 +107,6 @@ function PdfCOntent({ post,pageView=false }) {
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 transition: "all 0.5s ease-out",
-                bgcolor: "lightblue",
               },
               transition: "all 0.5s ease-out",
             }}

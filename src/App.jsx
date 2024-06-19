@@ -21,10 +21,13 @@ const PlantPage =lazy(()=> import("./pages/PlantPage/PlantPage"));
 const SourcePage =lazy(()=> import("./pages/SourcePage/SourcePage"));
 const AllSourcesPage =lazy(()=> import("./pages/AllSourcesPage/AllSourcesPage"));
 const PostPage =lazy(()=> import("./pages/PostPage/PostPage"));
+const ChartsLinksPage =lazy(()=> import("./pages/ChartsLinksPage/ChartsLinksPage"));
 const ChartsPage =lazy(()=> import("./pages/ChartsPage/ChartsPage"));
 const ChartsPage1 =lazy(()=> import("./pages/ChartsPage1/ChartsPage1"));
 const ChartsPage2 =lazy(()=> import("./pages/ChartsPage2/ChartsPage2"));
 const ChartsPage3 =lazy(()=> import("./pages/ChartsPage3/ChartsPage3"));
+const ChartsPage4 =lazy(()=> import("./pages/ChartsPage4/ChartsPage4"));
+const ChartsPage5 =lazy(()=> import("./pages/ChartsPage5/ChartsPage5"));
 
 function App() {
   AOS.init(AOS_INITIAL_OPTIONS)
@@ -45,9 +48,12 @@ function App() {
           <Route path="/picture/:id" element={<PicturePage />} />
           <Route path="/all-sources" element={<AllSourcesPage />} />
           <Route path="/charts" element={<ChartsPage />} />
+          <Route path="/charts-links" element={<ChartsLinksPage />} />
           <Route path="/charts1" element={<ChartsPage1 />} />
           <Route path="/charts2" element={<ChartsPage2 />} />
           <Route path="/charts3" element={<ChartsPage3 />} />
+          <Route path="/charts4" element={<ChartsPage4 />} />
+          <Route path="/charts5" element={<ChartsPage5 />} />
         </Route>
       </Routes>
     </ThemeProvider>

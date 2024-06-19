@@ -96,6 +96,7 @@ query GetSuggestionsCyrLexeme($text: String!,$textSub: String!,$offset:Int!) {
     }
   ) {
     lexeme {
+      id
       name
     }
   }
@@ -226,6 +227,38 @@ export const GET_SUGGESTIONS_FUNCTION =
                 }
               }
             }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const GET_SUGGESTIONS_ORIGINAL = gql`
+  query GetSuggestionsOriginal($text: String!,$textSub: String!,$offset:Int!) {
+    usages(
+      pagination: {limit: 20, offset: $offset}
+      order:{
+        citation:{ 
+          copyOfOriginal: {
+            original: {encoding: ASC }
+          }
+        }
+      }
+      filters: {
+        citation: {
+          copyOfOriginal: {
+            original: {encoding: {iStartsWith: $text }}
+          }
+        },
+        Or: {citation: {copyOfOriginal: 
+          {original: {encoding: {iContains: $textSub } } } } },
+      }
+    ) {
+      citation {
+        copyOfOriginal {
+          original {
+            encoding
           }
         }
       }

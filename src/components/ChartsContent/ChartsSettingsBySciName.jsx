@@ -95,7 +95,7 @@ function ChartsSettingsBySciName({ onNameChanged, initial = "", color_list, onCo
   return (
     <Formik {...formik} onSubmit={handleSubmit}>
       {({ values, setFieldValue, handleSubmit }) => {
-        // console.log('values',values.list);
+        
         return (
           <Form>
             <Container maxWidth={"sm"}>

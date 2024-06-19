@@ -11,7 +11,7 @@ import {
   ZAxis,
 } from "recharts";
 import {
-  parseData,
+  ParseData,
   parseDomain,
   renderCustomizedLabel,
   renderTooltip,
@@ -81,11 +81,8 @@ function getMyColor(color_list, name) {
   return color_list.find((c)=>c.name === name )?.color || "#8984D8"
 }
 function LexemeScatterChartView({ data, color_list, variants }) {
-  console.log(data)
-  console.log(color_list)
   const yearsSet = new Set();
-  const parsed_chart_data = parseData(data, yearsSet);
-  console.log(parsed_chart_data)
+  const parsed_chart_data = ParseData(data, yearsSet);
   const countsArr = Object.keys(parsed_chart_data).map(lexeme => parsed_chart_data[lexeme][0].count);
   const maxCount = Math.max(...countsArr);
   const domain = parseDomain(parsed_chart_data, yearsSet);
@@ -96,12 +93,10 @@ function LexemeScatterChartView({ data, color_list, variants }) {
         Object.keys(parsed_chart_data)
           .sort()
           .map((lexeme, index, w) => {
-            console.log(parsed_chart_data)
             const isLast = index + 1 === w.length;
             const updated_chart_data = sortAllData(parsed_chart_data[lexeme], yearsSet);
             const my_plant = parsed_chart_data[lexeme][0].plant
             const my_color = getMyColor(color_list, my_plant)
-            console.log(my_color)
             const sizeRange = range.map(r => r / maxCount);
             
             return (

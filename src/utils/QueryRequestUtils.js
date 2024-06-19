@@ -275,11 +275,7 @@ export function getStringNestedTypeEleven(label, text, list, variant) {
   let newArr = [];
   let newArr1 = [];
   let newText = "";
-  // console.log(list)
-  // console.log(variant)
-  // console.log(text)
-  // console.log(label)
-
+  
   if (variant === "iContains") {
     variant = "exact";
     const splittedList = [text]
@@ -534,7 +530,7 @@ function getComplexString(deep, conditions) {
     conditions[0],
     GRAPH_QUERYTYPE_FIELD_DATASET
   ).type;
-  console.log(type)
+  
   const variant = getVariant(conditions[0]);
   let string = "";
   let arr = ``;
@@ -733,7 +729,6 @@ export const getNestedProperty = (
   path2 = "-",
   defaultValue = "-"
 ) => {
-  // console.log(obj)
   if (path2 === "-") {
     const value = path1
       ?.split(".")

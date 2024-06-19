@@ -1,9 +1,11 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Link, Typography } from "@mui/material";
 import React from "react";
 import CustomHelmet from "../../components/Helmet/CustomHelmet";
 import SciNameScatterChartContent from "../../components/ChartsContent/SciNameScatterChart/SciNameScatterChartContent";
 
 function ChartsPage1() {
+  const color = "#d0c7b6";
+  
   return (
     <Box
       sx={{
@@ -16,6 +18,9 @@ function ChartsPage1() {
       }}
     >
       <CustomHelmet title={"Визуализация"} />
+      <Box minWidth={"50%"} sx={{width: "500px", height: "30px"}}>
+        <Link href="/charts-links" underline="none" sx={{color: color}}>Обратно в список визуализации</Link>
+      </Box>
       <Typography
         variant="about_subtitle"
         sx={{
@@ -24,7 +29,7 @@ function ChartsPage1() {
           mt: 3,
         }}
       >
-        Визуализация
+        Многозначность фитонимов
       </Typography>
       <SciNameScatterChartContent />
     </Box>

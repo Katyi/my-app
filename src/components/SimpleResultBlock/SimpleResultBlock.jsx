@@ -160,13 +160,11 @@ function SimpleResultBlock() {
 
   const handleChange = (event, value) => {
     let rowsPerPage = +variables?.offset || 10
-    console.log(value)
     let s = undefined;
     if (value > 1) {
       let b = Buffer.from(`arrayconnection:${value * rowsPerPage - rowsPerPage - 1}`);
       s = b.toString('base64');
     }
-    console.log(s)
     handleChangePage(value - 1, s);
   };
 

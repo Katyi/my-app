@@ -18,12 +18,9 @@ function FunctionTableChipSettings({
   data
 }) {
 const [openSetting, setOpenSetting] = useState(false)
-// const allChips = getAllChartsChipForFunctionTable(data.functionsConnection.edges,variants)
+
 const allChips = getAllChartsChipForFunctionTable(data.usagesConnection.edges,variants)
 const length = getArraysTotalLengthFromObject(exceptions)
-
-console.log(data)
-console.log(allChips)
 
   return (
     <Container maxWidth="lg" sx={{}}>

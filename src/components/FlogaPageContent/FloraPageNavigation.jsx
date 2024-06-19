@@ -7,8 +7,7 @@ function FloraPageNavigation() {
     for (const key in floraCollection) {
       if (Object.hasOwnProperty.call(floraCollection, key)) {
         const elem = floraCollection[key];
-    console.log(elem);
-
+    
         if (elem.id === event.currentTarget.id)
           elem.scrollIntoView({
             behavior: "smooth",

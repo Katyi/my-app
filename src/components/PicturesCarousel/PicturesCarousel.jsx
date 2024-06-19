@@ -8,7 +8,6 @@ function PicturesCarousel({ pictures }) {
   const navigate = useNavigate();
 
   const handleNavigatePicture = (event) => {
-    console.log(event.currentTarget.id)
     navigate(`/picture/${event.currentTarget.id}`);
   };
 

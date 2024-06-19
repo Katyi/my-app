@@ -121,7 +121,6 @@ function LexemeScatterChartContent() {
   );
   
   const edges = data?.plantsConnection?.edges;
-  console.log(edges)
   const [color_list, setColor_list] = useState([]);
 
   const filtered_data = useMemo(()=>filterDataByExceptions(edges, exceptions, variants),[edges, exceptions])

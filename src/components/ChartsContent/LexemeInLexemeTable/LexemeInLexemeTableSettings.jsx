@@ -11,18 +11,18 @@ import {
 } from "@mui/material";
 import { FieldArray, Form, Formik, useFormik } from "formik";
 import React, { useEffect, useState } from "react";
-import { GET_SUGGESTIONS_FUNCTION } from "../../../apollo/getSuggestions";
+import { GET_SUGGESTIONS_CYR_LEXEME } from "../../../apollo/getSuggestions";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import ColorPicker from "../../ColorPicker/ColorPicker";
-import { getFunctionList } from "../../../utils/ChartsUtils";
 
-function FunctionTableSettings({ onNameChanged, initial = "", color_list, onColorChanged=(plant,color)=>{} }) {
-  
+
+function LexemeInLexemeTableSettings({ onNameChanged, initial = "", color_list, onColorChanged=(plant,color)=>{}, setPlants }) {
   const color = "#d0c7b6";
   const [page, setPage] = useState(1);
   const [options, setOptions] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
+
   const formik = useFormik({
     initialValues: {
       list:
@@ -39,12 +39,12 @@ function FunctionTableSettings({ onNameChanged, initial = "", color_list, onColo
 
   const useSuggestionLat = () => {
     const usageLatScientificName = useLazyQuery(
-      GET_SUGGESTIONS_FUNCTION
+      GET_SUGGESTIONS_CYR_LEXEME
     );
     return [usageLatScientificName];
   };
   const suggestionLat = useSuggestionLat();
-
+  
   useEffect(() => {
     if (page > 1) loadMoreOptions();
   }, [page]);
@@ -71,9 +71,8 @@ function FunctionTableSettings({ onNameChanged, initial = "", color_list, onColo
     const options_new = suggestionLat.every((r) => r[1]?.data)
       ? [
           ...new Map(
-            suggestionLat[0][1].data?.plantUsages.map(el => getFunctionList(el.function))
-            .flat().map(p => p.reverse().join(" / ")).map((option) => {
-              return [option, option];
+            suggestionLat[0][1]?.data?.usages.map((option) => {
+              return [option.lexeme?.name, option];
             })
           ).keys(),
         ]
@@ -306,7 +305,7 @@ function FunctionTableSettings({ onNameChanged, initial = "", color_list, onColo
                             </Stack>
                           );
                         })}
-                      {values.list?.length < 4 && (
+                      {values.list.length < 4 && (
                         <Stack
                           direction={"row"}
                           justifyContent={"space-between"}
@@ -323,8 +322,7 @@ function FunctionTableSettings({ onNameChanged, initial = "", color_list, onColo
                               },
                             }}
                           >
-                            {/* ОТКЛЮЧЕНО ДО ИСПРАВЛЕНИЯ ЗАПРОСА НА БЭКЕ */}
-                            {/* <AddIcon /> */}
+                            <AddIcon />
                           </IconButton>
                         </Stack>
                       )}
@@ -340,4 +338,4 @@ function FunctionTableSettings({ onNameChanged, initial = "", color_list, onColo
   );
 }
 
-export default FunctionTableSettings;
+export default LexemeInLexemeTableSettings;

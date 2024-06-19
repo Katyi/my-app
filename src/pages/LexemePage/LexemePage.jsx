@@ -179,7 +179,7 @@ function LexemePage() {
                             },
                           }}
                         >
-                          {citation?.copyOfOriginal.encoding}
+                          {/* {citation?.copyOfOriginal.encoding} */}
                         </Typography>
                           </Box>
                         <Box 

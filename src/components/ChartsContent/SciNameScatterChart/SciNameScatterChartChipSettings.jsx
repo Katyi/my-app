@@ -21,9 +21,6 @@ const [openSetting, setOpenSetting] = useState(false)
 const allChips = getAllChartsChip(data.lexemesConnection.edges,variants)
 const length = getArraysTotalLengthFromObject(exceptions)
 
-console.log(data)
-console.log(allChips)
-
   return (
     <Container maxWidth="lg" sx={{}}>
       {/* кнопка открыть/свернуть */}

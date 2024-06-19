@@ -664,7 +664,7 @@ export const theme = createTheme({
             props: { variant: "outlined" },
             style: {
               textTransform: "uppercase",
-        fontFamily: "'Roboto', sans-serif",
+              fontFamily: "'Roboto', sans-serif",
               border: "1px solid #d0c7b6",
               fontSize: { xs: "14px", md: "20px" },
               backgroundColor: "rgba(135,2,3,0)",
@@ -864,5 +864,16 @@ export const theme = createTheme({
           },
         ],
       },
+      MuiLink: {
+        styleOverrides: {
+          root: {
+            color: color,
+            "&:hover": {
+              color: "gray",
+              fontWeight: 700
+            }
+          }
+        }
+      }
     },
   });

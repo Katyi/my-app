@@ -1,4 +1,5 @@
 export const CONTAIN_DATASET = ["содержит","не содержит", "совпадает"];
+export const CONTAIN_DATASET1 = ["содержит","не содержит"]; // временное решение пока запрос на бэке не сделают
 export const UNITYTYPE_DATASET = ["И", "ИЛИ"];
 export const FIELD_DATASET = [
   "Лексема",

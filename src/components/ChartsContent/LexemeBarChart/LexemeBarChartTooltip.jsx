@@ -1,9 +1,6 @@
 import { Box, Stack, Typography } from '@mui/material';
 
 const LexemeBarChartTooltip = ({active, payload, label}) => {
-  // console.log(active)
-  // console.log(payload)
-  // console.log(label)
   if (active && payload.length) {
     return (
       <Box

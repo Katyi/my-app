@@ -11,7 +11,7 @@ import {
   ZAxis,
 } from "recharts";
 import {
-  parseData,
+  ParseData,
   parseDomain,
   renderCustomizedLabel,
   renderTooltip,
@@ -40,6 +40,7 @@ function ChartScatter({ chart_data, lexeme, isLast = false, range, domain, my_co
           interval={!isLast ? 0 : "equidistantPreserveStart"}
           tick={!isLast ? { fontSize: 0 } : {fontSize: 12}}
           tickLine={{ transform: "translate(0, -6)" }}
+          
         />
         <YAxis
           dataKey="index"
@@ -82,10 +83,8 @@ function getMyColor(color_list, name) {
 }
 
 function SciNameScatterChartView({ data, color_list, variants }) {
-  console.log(data)
   const yearsSet = new Set();
-  const parsed_chart_data = parseData(data, yearsSet);
-  console.log(parsed_chart_data)
+  const parsed_chart_data = ParseData(data, yearsSet);
   const countsArr = Object.keys(parsed_chart_data).map(lexeme => parsed_chart_data[lexeme][0].count);
   const maxCount = Math.max(...countsArr);
   const domain = parseDomain(parsed_chart_data, yearsSet);
@@ -96,7 +95,6 @@ function SciNameScatterChartView({ data, color_list, variants }) {
         Object.keys(parsed_chart_data)
           .sort()
           .map((lexeme, index, w) => {
-            console.log(parsed_chart_data)
             const isLast = index + 1 === w.length;
             const updated_chart_data = sortAllData(parsed_chart_data[lexeme], yearsSet);
             const my_plant = parsed_chart_data[lexeme][0].plant

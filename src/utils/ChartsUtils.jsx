@@ -284,7 +284,7 @@ export const renderCustomizedLabel = ({ viewBox }, lexeme) => {
 function getMyColor(color_list, name) {
   return color_list.find((c) => c.name === name)?.color || "#8984D8";
 }
-export function parseData(data, yearsSet) {
+export function ParseData(data, yearsSet) {
   const {pathname} = useLocation();
   //сортировка данных для отображения на графике
   const chart_data = data.reduce((acc, el, index) => {
@@ -304,7 +304,6 @@ export function parseData(data, yearsSet) {
         ? u.citation.copyOfOriginal.original.genre.map((f) => f) 
         : null,
     }));
-    // console.log([...acc, ...dataIndex])
     return [...acc, ...dataIndex];
   }, []);
 
@@ -343,11 +342,9 @@ export function parseData(data, yearsSet) {
     }
     return acc;
   }, {});
-  // console.log(fixedToReturn)
   return fixedToReturn;
 }
 export function parseDataForFunctionTable(data, yearsSet) {
-  // console.log(data)
   //сортировка данных для отображения на графике
   const chart_data = data.reduce((acc, el, index) => {
     // const dataIndex = el.usage.map((u) => ({
@@ -356,7 +353,6 @@ export function parseDataForFunctionTable(data, yearsSet) {
       allSocialClassRels: el.allSocialClassRels?.length > 0 ? el.allSocialClassRels.map((p) => p.name) : null,
       allEthnoLists: el.allEthnoLists?.length > 0 ? el.allEthnoLists.map((p) => p.name) : null,
     };
-    // console.log([...acc, ...dataIndex])
     return [...acc, dataIndex];
   }, []);
 
@@ -380,7 +376,6 @@ export function parseDataForFunctionTable(data, yearsSet) {
     ];
     return acc;
   }, {});
-  // console.log(fixedToReturn)
   return fixedToReturn;
 }
 
@@ -396,7 +391,7 @@ export function sortAllData(chart_data, yearsSet) {
 export function getChartsChip(data, filterField) {
   const variant = filterField?.name || "parts";
   const yearsSet = new Set();
-  const parsed_chart_data = parseData(
+  const parsed_chart_data = ParseData(
     data?.map((e) => e.node),
     yearsSet
   );
@@ -428,12 +423,10 @@ export function getChartsChip(data, filterField) {
       }
     }
   }
-  // console.log([...general_data])
   return [...general_data];
 }
 export function getChartsChipForFunctionTable(data, filterField) {
   const variant = filterField?.name || "allSocialClassRels";
-  // console.log(variant)
   const yearsSet = new Set();
   const parsed_chart_data = parseDataForFunctionTable(
     data?.map((e) => e.node),
@@ -466,7 +459,6 @@ export function getChartsChipForFunctionTable(data, filterField) {
       }
     }
   }
-  // console.log([...general_data])
   return [...general_data];
 
 }
@@ -500,7 +492,6 @@ export function getAllChartsChipForFunctionTable(data, variants = new Map()) {
 // }
 
 export function deleteExceptionDots(data, exceptions = []) {
-  // console.log("filtered", data.map(el=>Array.isArray(el?.parts) && el?.parts.reduce((a,elem,i)=>!a && exceptions.includes(elem),false)?{}:el));
   return data;
 }
 

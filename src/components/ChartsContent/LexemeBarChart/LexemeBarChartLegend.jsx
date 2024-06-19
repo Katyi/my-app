@@ -19,7 +19,7 @@ const LexemeBarChartLegend = ({payload , colors}) => {
       }}
     >
       {payload.map((entry, index) => (
-        <Box sx={{display: "flex", alignItems:"center", gap:"10px"}}>
+        <Box sx={{display: "flex", alignItems:"center", gap:"10px"}} key={index}>
           <FaSquareFull style={{height: "10px"}} size={18} color={colors[index]} />
           <Typography sx={{fontSize: 10}}>
             {entry.value}

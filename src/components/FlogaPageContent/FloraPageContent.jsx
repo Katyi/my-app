@@ -23,7 +23,6 @@ function FloraPageContent() {
   const {data: themeTagsData} = useQuery(GET_ARTICLES_TAGS_BY_TYPE, {variables: { type: "тематика" }});
   
   const sortedData = data && data?.articles ? sortByDate([...data.articles]) : null;
-  console.log(sortedData)
   const timeArr = timeTagsData?.tagarticles.map(el => el.name)
   const placeArr = placeTagsData?.tagarticles.map(el => el.name)
   const formatArr = formatTagsData?.tagarticles.map(el => el.name)
@@ -43,32 +42,30 @@ function FloraPageContent() {
     ? active?.filter(j => timeArr.includes(j)).includes(i.name)
     : post
   ))
-  // console.log(filteredData1)
+  
   const filteredData2 = filteredData1?.filter(post => post.tag.some(i => 
     active?.filter(j => placeArr.includes(j)).length > 0 
     ? active?.filter(j => placeArr.includes(j)).includes(i.name)
     : post
   ))
-  // console.log(filteredData2)
+  
   const filteredData3 = filteredData2?.filter(post => post.tag.some(i => 
     active?.filter(j => formatArr.includes(j)).length > 0 
     ? active?.filter(j => formatArr.includes(j)).includes(i.name)
     : post
   ))
-  // console.log(filteredData3)
+  
   const filteredData4 = filteredData3?.filter(post => post.tag.some(i => 
     active?.filter(j => materialTypeArr.includes(j)).length > 0 
     ? active?.filter(j => materialTypeArr.includes(j)).includes(i.name)
     : post
   ))
-  // console.log(filteredData4)
+  
   const filteredData = filteredData4?.filter(post => post.tag.some(i => 
     active?.filter(j => themeArr.includes(j)).length > 0 
     ? active?.filter(j => themeArr.includes(j)).includes(i.name)
     : post
   ))
-  console.log(active)
-  console.log(filteredData)
   
   return (
     <Box>

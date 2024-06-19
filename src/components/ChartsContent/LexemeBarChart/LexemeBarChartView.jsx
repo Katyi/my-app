@@ -47,11 +47,9 @@ function LexemeBarChartView({ data, color_list, variants }) {
     }
     chartData[i].amt = 100;
   }
-  // console.log(chartData)
   
   // KEYS FOR BARS
   let dataKeyArr = [...new Set(allLexemesArr)]
-  // console.log(dataKeyArr)
   
   // GET COLORS FOR BARS
   let colors = COLORS_FOR_CHARTS();

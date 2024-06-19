@@ -1,17 +1,20 @@
-import { Box, Grid, Typography } from "@mui/material";
-import React, { useEffect, useMemo, useState } from "react";
-import SciNameScatterChartChipSettings from "./SciNameScatterChartChipSettings";
-import SciNameScatterChartSettings from "./SciNameScatterChartSettings";
-import SciNameScatterChartView from "./SciNameScatterChartView";
-import { CHARTS_DATA_BY_LEXEME } from "../../../apollo/chartSearch";
-import { useLazyQuery } from "@apollo/client";
-import ProgressBlock from "../../ProgressBlock/ProgressBlock";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useEffect, useMemo, useState } from 'react';
+import { Buffer } from "buffer";
+import { useParams, useSearchParams } from "react-router-dom";
+import { Box, Grid, Typography } from '@mui/material';
+import LexemeInLexemeTableSettings from './LexemeInLexemeTableSettings';
+import LexemeInOriginalTable from '../LexemeInOriginalTable/LexemeInOriginalTable';
+import ProgressBlock from '../../ProgressBlock/ProgressBlock';
+import { CHARTS_DATA_BY_ORIGINAL } from '../../../apollo/chartSearch';
+import { useLazyQuery, useQuery } from "@apollo/client";
 import {
   compareArrays,
   getColors,
   getFunctionList
 } from "../../../utils/ChartsUtils";
+import LexemeInLexemeTable from './LexemeInLexemeTable';
+import { GET_LEXEMES_BY_SCIENTIFICNAME, GET_SCIENTIFICNAME_BY_LEXEME } from '../../../apollo/lexemeByLexeme';
+import { getValidDatasetForOneLexeme } from '../../../utils/OneLexemeUtils';
 
 const variants = new Map([
   [
@@ -95,6 +98,7 @@ const variants = new Map([
     }
   ],
 ]);
+
 const TemplateBox = ({ text }) => (
   <Box
     display={"flex"}
@@ -108,25 +112,51 @@ const TemplateBox = ({ text }) => (
   </Box>
 );
 
-function SciNameScatterChartContent() {
-  const {pathname} = useLocation();
+const LexemeInLexemeTableContent = () => {
   const [params, setParams] = useSearchParams();
   const [name, setName] = useState(params.getAll("lexeme") || [""]);
+  const [scientificNames, setScientificNames] = useState([]);
   const [exceptions, setExceptions] = useState({});
   const [color_list, setColor_list] = useState([]);
-  const [loadData, { called, loading, data, error }] = useLazyQuery(
-    CHARTS_DATA_BY_LEXEME({ name })
-  );
+  const [currentPage, setCurrentPage] = useState(0);
+  const [after, setAfter] = useState(null);
+  const [offset, setOffset] = useState(10);
+  const [total, setTotal] = useState(0);
+  const [lastTotal, setLastTotal] = useState(0);
+  const [plants, setPlants] = useState();
 
-  const edges = data?.lexemesConnection?.edges;
-  const filtered_data = useMemo(()=>filterDataByExceptions(edges, exceptions, variants),[edges, exceptions])
+  const { called, loading, error, data } = useQuery(GET_LEXEMES_BY_SCIENTIFICNAME, {
+    variables: { name: scientificNames, offset: offset, afterString: after },
+  });
+
+  const {data: scientificNameData } = useQuery(GET_SCIENTIFICNAME_BY_LEXEME, {
+    variables: { name: name },
+  });
+
+  const edges = [...new Set(data?.usagesConnection?.edges.map(el =>  el.node))];
   
-  useEffect(() => {
-    if (!!name) {
-      loadData({name})
-    };
-  }, [loadData, name]);
+  const handleChangePage = (event, newPage) => {
+    let s = undefined;
+    if (newPage > 1) {
+      let b = Buffer.from(`arrayconnection:${newPage * offset - offset - 1}`);
+      s = b.toString('base64');
+    }
+    setCurrentPage(newPage-1)
+    setAfter(s ? s : null)
+  };
 
+  const handleChangeRowsPerPage = (newOffset) => {
+    setOffset(newOffset)
+  };
+
+  useEffect(() => {
+    if (!!scientificNameData) {
+      let temp = scientificNameData.usagesConnection.edges.map(el => el.node.scientificName).flat().map(r => r.name);
+      setScientificNames([... new Set(temp)])
+    };
+  }, [scientificNameData]);
+
+  
   useEffect(() => {
     const freshParams = params
       .getAll("lexeme")
@@ -137,9 +167,15 @@ function SciNameScatterChartContent() {
 
   useEffect(() => {
     if (edges && edges.length > 0) {
-      setColor_list(getColors(edges.map((e) => e.node).map((el) => el.name)));
+      setColor_list(getColors(name.map(el => el)));    
     }
-  }, [edges]);
+    setTotal(data?.usagesConnection.totalCount);
+  }, [data]);
+
+  useEffect(() => {
+    setAfter(null)
+    setCurrentPage(0)
+  },[name])
 
   function handleClickChip(variant, label) {
     return exceptions &&
@@ -154,6 +190,7 @@ function SciNameScatterChartContent() {
           [variant]: [...(p[variant] || []), label],
         }));
   }
+
   function handleChangeColor(plant, color) {
     plant &&
       color &&
@@ -161,82 +198,33 @@ function SciNameScatterChartContent() {
         color_list?.map((c) => (plant.includes(c.name) ? { ...c, color } : c)) || []
       );
   }
-  function filterDataByExceptions(edges, exceptions, variants) {
-    return edges
-      ?.map((e) => e.node)
-      ?.map((plant) => {
-        return {
-          ...plant,
-          usage: plant.usage.filter((us) => {
-            // Проверяем каждый вариант
-                // Проверяем есть ли хоть одно исключение
-                const activeVariants = Array.from(variants.values()).filter(v=>!!exceptions[v.verbose_name] && exceptions[v.verbose_name].length>0) || []
-                
-                if (activeVariants.length!==0) { 
-                  const atLeastOneFalse = activeVariants.map(
-                    (variant) => {
-                      const variantName = variant.verbose_name;
-                      if (!exceptions[variantName] || exceptions[variantName].length===0) return true;
-                      
-                      if (variant.apiName === "citation") {
-                        return compareArrays(
-                          exceptions[variantName],
-                          variant.get(us[variant.apiName].copyOfOriginal.original.genre)
-                        )
-                      }
-                      if (variant.apiName === "lexeme") {
-                        return compareArrays(
-                          exceptions[variantName],
-                          variant.get(us[variant.apiName].etymology.map(p => p.etymon))
-                        )
-                      }
-                      if (variant.apiName === "allFunctions") {
-                        return compareArrays(
-                          exceptions[variantName],
-                          variant.get(us[variant.apiName])
-                        );
-                      }
-                      
-                      return compareArrays(
-                        exceptions[variantName],
-                        variant.get(us[variant.apiName]).map((p) => p.name)
-                      );
-                    }
-                  );
-                  // Возвращаем false, если хотя бы один вариант вернул false
-                  return atLeastOneFalse.some(e=>e);
-                } 
-                return true
-          }),
-        };
-      });
-  }
 
   return (
     <Grid container rowGap={2} rowSpacing={2} pt={4}>
-      {/* Input для названия растения */}
+      {/* Input для памятника */}
       <Grid item xs={12}>
-        <SciNameScatterChartSettings
+        <LexemeInLexemeTableSettings
           onNameChanged={(v) => {
             setParams({ lexeme: v });
           }}
           onColorChanged={handleChangeColor}
           initial={name}
           color_list={color_list}
+          setPlants={setPlants}
         />
       </Grid>
       {/* Настройка графика - ТЭГИ */}
-      {data && edges && edges?.length > 0 && (
+      {/* {data && edges && edges?.length > 0 && (
         <Grid item xs={12}>
-          <SciNameScatterChartChipSettings
+          <LexemeInOriginalTableChipSettings
             data={data}
             variants={variants}
             exceptions={exceptions}
             onUpdate={handleClickChip}
           />
         </Grid>
-      )}
-      {/* Отображение графика */}
+      )} */}
+      {/* Отображение таблицы */}
       <Grid
         item
         xs={12}
@@ -245,19 +233,27 @@ function SciNameScatterChartContent() {
         minHeight={420}
       >
         {data && edges && edges?.length > 0 && (
-          <SciNameScatterChartView
-            data={filtered_data}
+          <LexemeInLexemeTable
+            data={edges}
+            name={name}
             color_list={color_list}
             variants={variants}
+            handleChangePage={handleChangePage}
+            handleChangeRowsPerPage={handleChangeRowsPerPage}
+            page={currentPage}
+            total={total}
+            offset={offset}
           />
         )}
         {!loading &&
           called &&
           name?.length > 0 &&
-          data?.lexemesConnection.edges.length === 0 && (
+          // edges?.length === 0 &&
+          data?.usagesConnection?.edges.length === 0 && 
+          (
             <TemplateBox text={"Растение не найдено"} />
         )}
-        {!data && !called && name?.length === 0 && (
+        {!data && !called  && name?.length === 0 && (
           <TemplateBox text={"Растение не выбрано"} />
         )}
         {!error && loading && name?.length > 0 && (
@@ -265,7 +261,7 @@ function SciNameScatterChartContent() {
         )}
       </Grid>
     </Grid>
-  );
+  )
 }
 
-export default SciNameScatterChartContent;
+export default LexemeInLexemeTableContent;

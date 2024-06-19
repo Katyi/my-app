@@ -1,9 +1,9 @@
 import { Box, Link, Typography } from "@mui/material";
 import React from "react";
 import CustomHelmet from "../../components/Helmet/CustomHelmet";
-import LexemeScatterChartContent from "../../components/ChartsContent/LexemeScatterChart/LexemeScatterChartContent";
+import LexemeInOriginalTableContent from "../../components/ChartsContent/LexemeInOriginalTable/LexemeInOriginalTableContent";
 
-function ChartsPage() {
+function ChartsPage4() {
   const color = "#d0c7b6";
 
   return (
@@ -29,11 +29,11 @@ function ChartsPage() {
           mt: 3,
         }}
       >
-        Синонимия фитонимов
+        Сравнение источников
       </Typography>
-      <LexemeScatterChartContent />
+      <LexemeInOriginalTableContent />
     </Box>
   );
 }
 
-export default ChartsPage;
+export default ChartsPage4; 

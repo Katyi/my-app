@@ -16,13 +16,11 @@ export function arrays_equal(a, b) {
   return a.length === b.length && a.every((el, ix) => el === b[ix]);
 }
 export function sort_images_by_ox(images) {
-  console.log(images)
   if (!images || Object.keys(images).length === 1) return images;
-  const sortedKeys = Object.keys(images).
   // Сортировка по номеру страницы - position.boundingRect.pageNumber
   // Сортировка по отступам углов картинки слева - x1,x2 и сверху - y1,y2. 
   // Чем меньше x тем картинка левее, чем меньше y тем картинка выше.
-  sort((a, b) => {
+  const sortedKeys = Object.keys(images).sort((a, b) => {
     const page1 = images[a].position.boundingRect.pageNumber;
     const page2 = images[b].position.boundingRect.pageNumber;
     const x1A = images[a].position.boundingRect.x1;
@@ -38,12 +36,10 @@ export function sort_images_by_ox(images) {
       return page1 - page2;
     } else if(page1 === page2) {
       if (x1A > 300 || x1B > 300) {
-        console.log("xxx")
         if (x1A === x1B) return x2A - x2B;
         return x1A - x1B;
       } 
       else {
-        console.log('yyy')
         return y1A - y1B;
       }
     }

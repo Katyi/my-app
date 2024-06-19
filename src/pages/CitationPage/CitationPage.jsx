@@ -103,7 +103,6 @@ function CitationPage() {
     const lexemeList = data.usagesConnection.edges.map(e=>e.node.lexeme)
     const oneQuote = data.citations[0];
     const imagePDF = get_image_pdf(oneQuote)
-    console.log(oneQuote);
      return (
       <Container
         maxWidth="lg"

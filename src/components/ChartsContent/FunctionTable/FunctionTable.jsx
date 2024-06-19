@@ -1,5 +1,4 @@
 import { Table, TableHead, TableRow, TableCell, Container, TableBody, Box } from '@mui/material';
-import React, { useState } from 'react'
 import CustomPagination from '../../WithPaginationBlock/CustomPagination';
 
 const styles = {
@@ -22,9 +21,6 @@ const styles = {
 };
 
 const FunctionTable = ({data, color_list, handleChangePage, handleChangeRowsPerPage, page, total, offset}) => {
-  console.log(data)
-  // console.log(total)
-  console.log(color_list)
   
   return (
     <Container sx={{paddingBottom:"20px"}}>

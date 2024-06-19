@@ -16,34 +16,6 @@ import {
 const regex = /^.*(?=\s-\s)/;
 
 const variants = new Map([
-  // [
-  //   "часть растения",
-  //   {
-  //     label: "Части растения",
-  //     verbose_name: "часть растения",
-  //     name: "parts",
-  //     apiName: "plantPart",
-  //     nullName: "часть растения не указана",
-  //     get: (arr) => (arr && Array.isArray(arr) ? arr : ["не указана"]),
-  //   },
-  // ],
-  // [
-  //   "функция растения",
-  //   {
-  //     label: "Функции растения",
-  //     verbose_name: "функция растения",
-  //     name: "functions",
-  //     apiName: "allFunctions",
-  //     nullName: "функция растения не указана",
-  //     get: (arr) => {
-  //       if (arr ) {
-  //         const array = getFunctionList(arr);
-  //         return array.map(k => k.reverse().join(" / "));
-  //       }
-  //       return ["функция не указана"];
-  //     },
-  //   },
-  // ],
   [
     "жанр",
     {
@@ -61,42 +33,8 @@ const variants = new Map([
       },
     }
   ],
-  // [
-  //   "язык в источнике",
-  //   {
-  //     label: "Переведено с языков",
-  //     verbose_name: "язык в источнике",
-  //     name: "languageAffiliation",
-  //     apiName: "languageAffiliation",
-  //     nullName: "язык перевода не указан",
-  //     get: (arr) => {
-  //       return arr && Array.isArray(arr) ? arr : ["не указан"];
-  //     },
-  //   },
-  // ],
-  // [
-  //   "этимон",
-  //   {
-  //     label: "Этимон",
-  //     verbose_name: "этимон",
-  //     name: "etymology",
-  //     apiName: "lexeme",
-  //     nullName: "этимон не указан",
-  //     get: (arr) => {return arr ? arr : ["не указан"]},
-  //   }
-  // ],
-  // [
-  //   "сословие",
-  //   {
-  //     label: "Сословие",
-  //     verbose_name: "сословие",
-  //     name: "allSocialClassRels",
-  //     apiName: "allSocialClassRels",
-  //     nullName: "сословие не указано",
-  //     get: (arr) => (arr && Array.isArray(arr) ? arr : ["не указано"]),
-  //   }
-  // ],
 ]);
+
 const TemplateBox = ({ text }) => (
   <Box
     display={"flex"}
@@ -120,15 +58,11 @@ function LexemeBarChartContent() {
   );
 
   const edges = data?.plantsConnection?.edges;
-  // console.log(data)
   const [color_list, setColor_list] = useState([]);
 
   const filtered_data = useMemo(()=>filterDataByExceptions(edges, exceptions, variants),[edges, exceptions])
-  // console.log(exceptions)
-  // console.log(filtered_data)
   
   useEffect(() => {
-    console.log(name)
     if (!!name) {
       loadData({ name })
     };
@@ -169,8 +103,7 @@ function LexemeBarChartContent() {
       );
   }
   function filterDataByExceptions(edges, exceptions, variants) {
-    // console.log(edges)
-    // console.log(exceptions)
+    
     return edges
       ?.map((e) => e.node)
       ?.map((plant) => {
@@ -180,24 +113,13 @@ function LexemeBarChartContent() {
             // Проверяем каждый вариант
                 // Проверяем есть ли хоть одно исключение
                 const activeVariants = Array.from(variants.values()).filter(v=>!!exceptions[v.verbose_name] && exceptions[v.verbose_name].length>0) || []
-                // console.log(activeVariants)
                 if (activeVariants.length!==0) { 
                   const atLeastOneFalse = activeVariants.map(
                     (variant) => {
                       const variantName = variant.verbose_name;
-                      // console.log(variantName)
                       if (!exceptions[variantName] || exceptions[variantName].length===0) return true;
                       
                       if (variant.apiName === "citation") {
-                        // console.log(exceptions[variantName])
-                        // console.log(variant.get(us[variant.apiName].copyOfOriginal.original.genre))
-                        // console.log(
-                        //   compareArrays(
-                        //     exceptions[variantName],
-                        //     variant.get(us[variant.apiName].copyOfOriginal.original.genre)
-                        //   )
-                        // )
-
                         return compareArrays(
                           exceptions[variantName],
                           variant.get(us[variant.apiName].copyOfOriginal.original.genre)
@@ -263,7 +185,6 @@ function LexemeBarChartContent() {
         minHeight={420}
       >
         {data && edges && edges?.length > 0 &&
-        // data?.plantsConnection.edges[0].node?.usage[0].citation?.copyOfOriginal.original.genre.length > 0 &&  
         (
           <LexemeBarChartView
             data={filtered_data}
@@ -277,13 +198,6 @@ function LexemeBarChartContent() {
           data?.plantsConnection.edges.length === 0 && (
             <TemplateBox text={"Растение не найдено"} />
         )}
-        {/* {!loading &&
-          called &&
-          name?.length > 0 &&
-          data?.plantsConnection.edges[0]?.node?.usage[0].citation?.copyOfOriginal.original.genre.length === 0 && (
-            <TemplateBox text={"У растения жанр не найден"} />
-        )} */}
-        
         {!data && !called && name?.length === 0 && (
           <TemplateBox text={"Растение не выбрано"} />
         )}

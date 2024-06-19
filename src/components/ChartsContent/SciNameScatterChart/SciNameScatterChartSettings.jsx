@@ -93,7 +93,6 @@ function SciNameScatterChartSettings({ onNameChanged, initial = "", color_list, 
   return (
     <Formik {...formik} onSubmit={handleSubmit}>
       {({ values, setFieldValue, handleSubmit }) => {
-        // console.log('values',values.list);
         return (
           <Form>
             <Container maxWidth={"sm"}>

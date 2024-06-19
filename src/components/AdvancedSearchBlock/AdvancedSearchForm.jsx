@@ -18,6 +18,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { generateAdvancedFormInitialFromParams } from "../../utils/QueryRequestUtils";
 import {
   CONTAIN_DATASET,
+  CONTAIN_DATASET1,
   GRAPH_QUERYTYPE_FIELD_DATASET,
   SEARCH_PARAMS_CONTAIN_LABEL,
 } from "../../dataset/FormDataset";
@@ -535,16 +536,6 @@ function AdvancedSearchForm() {
     };
   };
 
-  // const useSuggestionCyr = () => {
-  //   const lexemeNames = useLazyQuery(GET_SUGGESTIONS_CYR_LEXEME);
-  //   const usageCyrPlantName = useLazyQuery(
-  //     GET_SUGGESTIONS_CYR_USAGE_PLANT_NAME
-  //   );
-  //   const usageCyrPicturePlantName = useLazyQuery(
-  //     GET_SUGGESTIONS_CYR_PICTURE_PLANT_NAME
-  //   );
-  //   return [lexemeNames, usageCyrPicturePlantName,usageCyrPlantName];
-  // };
   const suggestions = {};
   suggestions["Лексема"] = useLexemeSuggestions();
   suggestions["Ботаническое название растения (лат.)"] = useScientificNameSuggestions();
@@ -585,24 +576,6 @@ function AdvancedSearchForm() {
   suggestions["Оригинал / перевод"] = useOriginalType();
   suggestions["Автор"] = useAuthor();
   suggestions["Жанр"] = useGenre();
-  
-
-  //suggestions['Описание растения'] =  // we need to boolean processing as well as text values
-  // suggestions["Сословие"] = useSocialClass();
-  //suggestions['Поиск по цитате'] =  // wee need to process fultext-search requests
-  //suggestions['Фольклорные материалы'] = // we need to boolean processing as well as text values
-
-  // function checkIsDisabled(values, field) {
-  //   const fieldList = values.map((e) => e.field);
-  //   const unityTypeList = values.map((e) => e.unityType);
-
-  //   const currentUnityType = unityTypeList[unityTypeList.length - 1];
-
-  //   const example = fieldList.reduce((acc, el) => {
-  //     acc[el] = (acc[el] || 0) + 1;
-  //     return acc;
-  //   }, {});
-  // }
   
   return (
     <Formik
@@ -660,32 +633,6 @@ function AdvancedSearchForm() {
                                 rowGap: "16px",
                               }}
                             >
-                              {/* {index > 0 && (
-                                <Box className="col">
-                                  <Field
-                                    as={Select}
-                                    variant="filled"
-                                    className="unityType"
-                                    input={<InputBase variant="outlined" />}
-                                    name={`conditions.${index}.unityType`}
-                                    defaultValue={UNITYTYPE_DATASET[0]}
-                                    // value={values.conditions[index].unityType}
-                                    IconComponent={ExpandMoreIcon}
-                                    sx={{}}
-                                  >
-                                    {UNITYTYPE_DATASET.map((el) => (
-                                      <MenuItem
-                                        key={"opt-item-unityType" + el}
-                                        value={el}
-                                        sx={{ textTransform: "uppercase" }}
-                                      >
-                                        {el}
-                                      </MenuItem>
-                                    ))}
-                                  </Field>
-                                </Box>
-                              )} */}
-
                               {/* SELECT ДЛЯ ГДЕ ИСКАТЬ */}
                               <Box
                                 className="col"
@@ -696,7 +643,6 @@ function AdvancedSearchForm() {
                                   as={Select}
                                   displayEmpty
                                   fullWidth
-                                  // value={values.conditions[index].field}
                                   variant="filled"
                                   className="field"
                                   onClick={(e) => {
@@ -709,7 +655,6 @@ function AdvancedSearchForm() {
                                       `conditions.${index}.list`,
                                       []
                                     );
-                                    // values.conditions[index].text = "";
                                     if (
                                       suggestions[field] &&
                                       !suggestions[field].options.every(
@@ -757,11 +702,6 @@ function AdvancedSearchForm() {
                                       );
                                     })}
                                 </Field>
-                                {/* <ErrorMessage
-                              name={`conditions.${index}.field`}
-                              component="div"
-                              className="field-error"
-                            /> */}
                               </Box>
 
                               {/* SELECT ДЛЯ "СОДЕРЖИТ","НЕ СОДЕРЖИТ", "СОВПАДАЕТ"  */}
@@ -776,14 +716,26 @@ function AdvancedSearchForm() {
                                   fullWidth
                                   variant="filled"
                                   id={values.conditions[index].contain}
-                                  // defaultValue={CONTAIN_DATASET[0]}
-                                  // value={values.conditions[index].unityType}
                                   input={<InputBase variant="outlined" />}
                                   displayEmpty
                                   IconComponent={ExpandMoreIcon}
                                   className="contain"
                                 >
-                                  {CONTAIN_DATASET.map((el) => (
+                                  {/* временное решение пока запрос на бэке не сделают */}
+                                  {values.conditions[0].field !== "Функция растения" 
+                                    && values.conditions[0].field !== "Жанр"
+                                    && values.conditions[0].field !== "Способ обработки и запасания"
+                                  ? CONTAIN_DATASET
+                                  .map((el) => (
+                                    <MenuItem
+                                      key={"opt-item-contain" + el}
+                                      value={el}
+                                    >
+                                      {el}
+                                    </MenuItem>
+                                  ))
+                                  : CONTAIN_DATASET1
+                                  .map((el) => (
                                     <MenuItem
                                       key={"opt-item-contain" + el}
                                       value={el}
@@ -792,96 +744,77 @@ function AdvancedSearchForm() {
                                     </MenuItem>
                                   ))}
                                 </Field>
-                                {/* <ErrorMessage
-                                name={`conditions.${index}.contain`}
-                                component="div"
-                                className="field-error"
-                              /> */}
                               </Box>
                                {/* INPUT ЧТО ИСКАТЬ  */}
-                              <Box
-                                className="col"
-                                sx={{
-                                  flexGrow: 2,
-                                  display: "flex",
-                                  alignItems: "flex-end"
-                                }}
-                              >
-                                {values.conditions[index].contain ===
-                                  "совпадает" 
-                                  // && values.conditions[index].field !== "Жанр"
-                                // && values.conditions[index].field !==
-                                //   "Способ обработки и запасания" 
-                                //   &&
-                                // values.conditions[index].field !==
-                                //   "Функция растения" 
-                                  ? (
-                                  <ChipAutocomplete
-                                    index={index}
-                                    field="list"
-                                    values={values}
-                                    handleChange={handleChange}
-                                    suggestions={suggestions}
-                                    setFieldValue={setFieldValue}
-                                  />
-                                ) : (
-                                  <ExactAutocomplete
-                                    index={index}
-                                    field="list"
-                                    values={values}
-                                    handleChange={handleChange}
-                                    suggestions={suggestions}
-                                    setFieldValue={setFieldValue}
-                                  />
-                                )}
-
-                                {/* <ErrorMessage
-                                  name={`conditions.${index}.text`}
-                                  component="div"
-                                  className="field-error"
-                                /> */}
-                                {(values.conditions[index].field ||
-                                  values.conditions?.length > 0) && (
-                                  <IconButton
-                                    onClick={() => {
-                                      if (values.conditions?.length === 1) {
-                                        setFieldValue(
-                                          `conditions.${index}.text`,
-                                          ""
-                                        );
-                                        setFieldValue(
-                                          `conditions.${index}.list`,
-                                          []
-                                        );
-                                        setFieldValue(
-                                          `conditions.${index}.field`,
-                                          ""
-                                        );
-                                      } else {
-                                        remove(index);
-                                      }
-                                    }}
-                                    sx={{
-                                      borderRadius: 0,
-                                      width: "50px",
-                                      height: "50px",
-                                      "&:hover": {
-                                        bgcolor: "white",
-                                        color: "red",
-                                      },
-                                    }}
-                                  >
-                                    <ClearIcon />
-                                  </IconButton>
-                                )}
-                              </Box>
+                                <Box
+                                  className="col"
+                                  sx={{
+                                    flexGrow: 2,
+                                    display: "flex",
+                                    alignItems: "flex-end"
+                                  }}
+                                >
+                                  {values.conditions[index].contain === "совпадает"
+                                    ? (
+                                    <ChipAutocomplete
+                                      index={index}
+                                      field="list"
+                                      values={values}
+                                      handleChange={handleChange}
+                                      suggestions={suggestions}
+                                      setFieldValue={setFieldValue}
+                                    />
+                                  ) : (
+                                    <ExactAutocomplete
+                                      index={index}
+                                      field="list"
+                                      values={values}
+                                      handleChange={handleChange}
+                                      suggestions={suggestions}
+                                      setFieldValue={setFieldValue}
+                                    />
+                                  )}
+                                  {(values.conditions[index].field ||
+                                    values.conditions?.length > 0) && (
+                                    <IconButton
+                                      onClick={() => {
+                                        if (values.conditions?.length === 1) {
+                                          setFieldValue(
+                                            `conditions.${index}.text`,
+                                            ""
+                                          );
+                                          setFieldValue(
+                                            `conditions.${index}.list`,
+                                            []
+                                          );
+                                          setFieldValue(
+                                            `conditions.${index}.field`,
+                                            ""
+                                          );
+                                        } else {
+                                          remove(index);
+                                        }
+                                      }}
+                                      sx={{
+                                        borderRadius: 0,
+                                        width: "50px",
+                                        height: "50px",
+                                        "&:hover": {
+                                          bgcolor: "white",
+                                          color: "red",
+                                        },
+                                      }}
+                                    >
+                                      <ClearIcon />
+                                    </IconButton>
+                                  )}
+                                </Box>
                             </Box>
                           </Box>
                         );
 
                       })}
                     <Box display={"flex"}>
-                      {/* !(dirty && isValid) ? "none" : "flex"*/}
                       <Button
                         variant="text"
                         onClick={() =>

@@ -1,5 +1,4 @@
 import { Box, Chip, Container } from '@mui/material'
-import React, { useEffect } from 'react'
 import { AOS_INTRO_BLOCK } from '../../dataset/Animations';
 import { groupBy, hexToRgb, sortByTagType } from '../../utils/FloraUtils';
 
@@ -15,11 +14,9 @@ function BlogTagContainer({data, filtered, active_list, setActive, timeArr, plac
   const tags_list = groupBy(data.reduce((acc,element,index)=>{
       return acc = [...acc,...element.tag];
   },[]),'name')
-  console.log(tags_list)
   let filtered_tags_list = Object.keys(groupBy(filtered.reduce((acc,element,index)=>{
       return acc = [...acc,...element.tag];
   },[]),'name'))
-  console.log(filtered_tags_list)
   if (timeNonExcludableTags?.includes(active_list[0])) {
     filtered_tags_list = [...filtered_tags_list, ...timeNonExcludableTags]
   } else if (placeNonExcludableTags?.includes(active_list[0])) {
@@ -32,14 +29,7 @@ function BlogTagContainer({data, filtered, active_list, setActive, timeArr, plac
     filtered_tags_list = [...filtered_tags_list, ...themeNonExcludableTags]
   }
 
-  console.log(filtered_tags_list)
   const sorted_tags = sortByTagType(tags_list)
-
-  useEffect(()=> {
-    if (active_list?.length > 0) {
-      console.log(active_list[0])
-    }
-  },[active_list])
 
   return (
     <Container>
@@ -84,4 +74,4 @@ function BlogTagContainer({data, filtered, active_list, setActive, timeArr, plac
   )
 }
 
-export default BlogTagContainer
+export default BlogTagContainer;

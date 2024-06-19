@@ -206,7 +206,7 @@ const downloadxls = (data, name) => {
       },
       "i"
     );
-    console.log(sheet)
+    
     if (imagePDF && Object.keys(imagePDF).length > 0) {
       Object.keys(imagePDF).map((img, imgIndex) => {
         const current = imagePDF[img];

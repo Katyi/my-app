@@ -11,10 +11,8 @@ import { useLazyQuery } from "@apollo/client";
 import {
   compareArrays,
   getColors,
-  getFunctionList
 } from "../../../utils/ChartsUtils";
 import { getStringNestedTypeEleven } from '../../../utils/QueryRequestUtils';
-import { forIn } from 'lodash';
 
 const variants = new Map([
   [
@@ -60,31 +58,17 @@ const FunctionTableContent = () => {
   const [filters, setFilters] = useState(null);
   const [exceptions, setExceptions] = useState({});
   const [color_list, setColor_list] = useState([]);
-
   const [currentPage, setCurrentPage] = useState(0);
   const [after, setAfter] = useState(null);
   const [offset, setOffset] = useState(10);
   const [total, setTotal] = useState(0);
-
-
   const [loadData, { called, loading, data, error }] = useLazyQuery(
     CHARTS_DATA_BY_FUNCTION({filters: filters, page: currentPage, offset: offset, after: after})
   );
 
-  // const edges = data?.functionsConnection?.edges;
   const edges = data?.usagesConnection?.edges;
-  console.log(edges)
-  // console.log(edges)
-  // const filtered_data = useMemo(()=>filterDataByExceptionsOld(edges, exceptions, variants),[edges, exceptions]);
   const filtered_data = useMemo(()=>filterDataByExceptions(edges, exceptions, variants),[edges, exceptions]);
-  // const filtered_data1 = edges?.filter(el => el.node.allEthnoLists[0].name === 'немцы');
-  // const filtered_data = edges;
   
-  // console.log(total)
-  console.log(exceptions)
-  console.log(filtered_data)
-  // console.log(filtered_data1)
-
   const handleChangePage = (event, newPage) => {
     let s = undefined;
     if (newPage > 1) {
@@ -100,25 +84,18 @@ const FunctionTableContent = () => {
   };
 
   useEffect(() => {
-    // console.log(filters)
     if (!!filters) {
       loadData({filters: filters, page: currentPage, offset: offset, after: after})
     };
   }, [loadData, filters]);
 
-  
-
   useEffect(() => {
-    // console.log(params)
     const freshParams = params
       .getAll("function")
-      // ?.filter((p) => p !== "null" && p !== "undefined").map(el=>el.includes(" - ")?regex.exec(el)[0] : el).join('').split(' / ');
-      ?.filter((p) => p !== "null" && p !== "undefined").map(el=>el.includes(" - ")?regex.exec(el)[0] : el);
+      ?.filter((p) => p !== "null" && p !== "undefined");
     
       let newFresh = "{" + getStringNestedTypeEleven("function", "", freshParams, "inList").replace('inDeepMarker', '') + "}"
     
-    // console.log(freshParams)
-    // console.log(newFresh)
     if (freshParams) setName(freshParams);
     if (newFresh) setFilters(newFresh);
     setExceptions({})
@@ -126,16 +103,16 @@ const FunctionTableContent = () => {
 
   useEffect(() => {
     let labelArr = name.map(el => el.split(' / ')).map(el => el[el.length-1])
-    // console.log(labelArr)
     if (edges && edges.length > 0) {
       setColor_list(getColors(labelArr.map(el => el)));
     }
-    setTotal(data?.usagesConnection.totalCount)
+    setTotal(data?.usagesConnection.totalCount);
+    if (edges?.length < offset) {
+      setCurrentPage(0);
+    }
   }, [edges]);
 
   function handleClickChip(variant, label) {
-    // console.log(variant)
-    // console.log(label)
     return exceptions &&
       exceptions[variant] &&
       exceptions[variant].includes(label)
@@ -155,67 +132,10 @@ const FunctionTableContent = () => {
         color_list?.map((c) => (plant.includes(c.name) ? { ...c, color } : c)) || []
       );
   }
-  function filterDataByExceptionsOld(edges, exceptions, variants) {
-    // console.log(edges)
-    return edges
-      ?.map((e) => e.node)
-      ?.map((plant) => {
-        // console.log(plant)
-        return {
-          ...plant,
-          usage: plant.usage?.filter((us) => {
-            // Проверяем каждый вариант
-            // Проверяем есть ли хоть одно исключение
-            const activeVariants = Array.from(variants.values()).filter(v=>!!exceptions[v.verbose_name] && exceptions[v.verbose_name].length>0) || []
-                
-            if (activeVariants.length!==0) { 
-              const atLeastOneFalse = activeVariants.map(
-                (variant) => {
-                  const variantName = variant.verbose_name;
-                  if (!exceptions[variantName] || exceptions[variantName].length===0) return true;
-                  
-                  if (variant.apiName === "citation") {
-                    return compareArrays(
-                      exceptions[variantName],
-                      variant.get(us[variant.apiName].copyOfOriginal.original.genre)
-                    )
-                  }
-                  if (variant.apiName === "lexeme") {
-                    return compareArrays(
-                      exceptions[variantName],
-                      variant.get(us[variant.apiName].etymology.map(p => p.etymon))
-                    )
-                  }
-                  if (variant.apiName === "allFunctions") {
-                    return compareArrays(
-                      exceptions[variantName],
-                      variant.get(us[variant.apiName])
-                    );
-                  }
-                  
-                  return compareArrays(
-                    exceptions[variantName],
-                    variant.get(us[variant.apiName]).map((p) => p.name)
-                  );
-                }
-              );
-              // Возвращаем false, если хотя бы один вариант вернул false
-              return atLeastOneFalse.some(e=>e);
-            } 
-            return true
-          }
-        ),
-        };
-      }
-    );
-  }
-
   function filterDataByExceptions(edges, exceptions, variants) {
     let newEdges =  edges?.filter(us => {
-      console.log(us)
-      // el.node.lexeme.name === "асидиесъ"
       const activeVariants = Array.from(variants.values()).filter(v=>!!exceptions[v.verbose_name] && exceptions[v.verbose_name].length>0) || [];
-      console.log(activeVariants)
+      
       if (activeVariants.length!==0) { 
         const atLeastOneFalse = activeVariants.map(
           (variant) => {

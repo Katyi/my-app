@@ -136,7 +136,6 @@ function AdvancedSearchResultTable(rows) {
         <TableBody>
           {rows.map((row, index) => {
             const imagePDF = get_image_pdf(row.citation)
-            console.log(imagePDF)
             const mainLexeme =  row?.lexeme
             return (
               <TableRow row={row} key={"row - " + index +'  ' +new Date().toUTCString()} hover={true}>
